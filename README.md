@@ -32,7 +32,7 @@ Because I'm confident that UAH either won't or can't. Most of the web services a
 
 #### Wait, all this shit does is extend my session?
 
-Erm, well, for now: yes. Being logged out while studying has got to be the most inconsiderate nonsense I can imagine. Unfotunately, I'm late in creating this program, as the closed-source Angel software is decrepit and has 'forced' the university to pay more money for a new system, called "Canvas". And while I hope this newfangled "Canvas" improves the already-quite-low bar, it's a shame to see money wasted like this. I fully intend to bake my extension into Canvas in the coming daying.
+Erm, well, for now: yes. Being logged out while studying has got to be the most inconsiderate nonsense I can imagine. Unfotunately, I'm late in creating this program, as the closed-source Angel software is decrepit and has 'forced' the university to pay more money for a new system, called "Canvas". And while I hope this newfangled "Canvas" improves the already-quite-low bar, it's a shame to see money wasted like this. I fully intend to bake my extension into Canvas later on.
 
 If the app is found useful, I'm considering including some other features, such as registration code autocompletion, revamped CSS, and maybe tie the whole thing into my other UAH bullshit-away software: Chevaline Delta.
 
