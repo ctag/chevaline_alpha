@@ -15,7 +15,7 @@ This app doesn't work if your browser is closed or you put your computer into st
 
 Right now you must download wtf_uah.xpi and install manually; to do so:
 
-* Download wtf_uah.xpi
+* Download wtf_uah.xpi (you may ignore all other files in this git)
 * Type 'about:addons' into the URL bar, hit enter
 * At the top of the add-ons page, click menu -> "Install add-on from file"
 * Select wtf_uah.xpi, restart firefox, go get werk done!
