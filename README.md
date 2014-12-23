@@ -26,7 +26,7 @@ Right now you must download wtf_uah.xpi and install manually; to do so:
 
 #### Why not just ask UAH to fix these glaring issues?
 
-Because I'm confident that UAH either won't or can't. Most of the web services are purchased with squandered funds, which means that students are locked from making valuable contributions to the source code. This is typicall of most schools, I suppose, but that does not make such bullshit OK.
+Because I'm confident that UAH either won't or can't. Most of the web services are purchased with squandered funds, which means that students are locked from making valuable contributions to the source code. This is typicall of most schools, I suppose, but idiocy en masse is still not OK.
 
 *Also*, UAH should already be aware. I'm not going to insult them be asking why students are punished for poor decisions. And consider this: if someone at UAH asks the company that writes Banner to fix the issue, and banner (because its still shit, but with a longer session life now to brute force) gets owned, won't it look like my fault?
 
@@ -42,7 +42,7 @@ tl;dr: Log out after you're done with Banner, or it'll bite you.
 
 This isn't a problem with my Firefox extension (surprise surprise). In fact, you can test it right now, without wtf-uah. Go to a computer and log in to banner, this is an "authentic" access, right? Go to another computer and log into banner again. Refresh both pages and watch the system take a shit. On your original, "authentic" machine, you've been logged out with an error "ERMAGERD, PIRATESES!". The supposedly malicious computer is still logged in though, with complete access to your account.... Schwing!
 
-The real problem is that both computers had authentic access, and this shit is inexcusable.
+The real problem is that both computers had authentic access, and this is inexcusable.
 
 *Update: Canvas doesn't pull this shit, it appears you may log in (with my app installed as well) to multiple sessions.*
 
