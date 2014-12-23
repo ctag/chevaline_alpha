@@ -1,9 +1,9 @@
 {
-  "name": "charger_keepalive",
-  "title": "charger_keepalive",
+  "name": "wtf-uah",
+  "title": "WTF-UAH",
   "id": "jid1-rApnWaAki9RlGA",
-  "description": "a basic add-on",
-  "author": "",
+  "description": "Web Timeout Friend for UAHuntsville!",
+  "author": "Christopher [ctag] Bero",
   "license": "MPL 2.0",
-  "version": "0.1"
+  "version": "0.2a"
 }
