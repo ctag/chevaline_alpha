@@ -28,7 +28,7 @@ Right now you must download wtf_uah.xpi and install manually; to do so:
 
 Because I'm confident that UAH either won't or can't. Most of the web services are purchased with squandered funds, which means that students are locked from making valuable contributions to the source code. This is typicall of most schools, I suppose, but that does not make such bullshit OK.
 
-*Also*, UAH should already be aware. I'm not going to insult them be asking why students are punished for poor decisions. And consider this: if someone at UAH asks the company that writes Banner to fix the issue, and banner (because it's still shit, but with a longer session life now to brute force) gets owned, won't it look like my fault?
+*Also*, UAH should already be aware. I'm not going to insult them be asking why students are punished for poor decisions. And consider this: if someone at UAH asks the company that writes Banner to fix the issue, and banner (because its still shit, but with a longer session life now to brute force) gets owned, won't it look like my fault?
 
 #### Wait, all this shit does is extend my session?
 
