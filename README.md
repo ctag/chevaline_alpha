@@ -22,7 +22,13 @@ Right now you must download wtf_uah.xpi and install manually; to do so:
 
 Because I'm confident that UAH either won't or can't. Most of the web services are purchased with squandered funds, which means that students are locked from making valuable contributions to the source code. This is typicall of most schools, I suppose, but that does not make such bullshit OK.
 
-There's *also* the small problem: UAH should already be aware. I'm not going to insult them be asking why student's are punished for their poor decisions. And consider this: if someone at UAH asks the company that writes Banner to fix the issue, and banner (because it's still shit, but with a longer session life now to brute force) gets owned, won't it look like my fault?
+*Also*, UAH should already be aware. I'm not going to insult them be asking why students are punished for poor decisions. And consider this: if someone at UAH asks the company that writes Banner to fix the issue, and banner (because it's still shit, but with a longer session life now to brute force) gets owned, won't it look like my fault?
+
+#### Wait, all this shit does is extend my session?
+
+Erm, well, for now: yes. Being logged out while studying has got to be the most inconsiderate nonsense I can imagine. And while I hope this newfangled "Canvas" improves the already-quite-low bar, it's a shame to see money wasted like this.
+
+If the app is found useful, I'm considering including some other features, such as registration code autocompletion, revamped CSS, and maybe tie the whole thing into my other UAH bullshit-away software: Chevaline Delta.
 
 #### Why is your app complete shit?
 
@@ -30,9 +36,7 @@ You know what? I really considered making a beautiful javascript application. I 
 
 #### What if I want to make your app *not* complete shit?
 
-Pull requests welcome. You may also email me at csb0019@uah.edu, the more people who use this app, the more likely I am to actually maintain it.
-
-
+Pull requests welcome. You may also email me or ge in contact some other way, the more people who use this app, the more likely I am to actually maintain it.
 
 
 
