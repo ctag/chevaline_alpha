@@ -38,7 +38,9 @@ You know what? I really considered making a beautiful javascript application. I 
 
 Pull requests welcome. You may also email me or ge in contact some other way, the more people who use this app, the more likely I am to actually maintain it.
 
+### Unrelated
 
+Note to self: curent Banner logout period: 60 minutes. That's at **least** 1,380 minutes too short.
 
 
 
