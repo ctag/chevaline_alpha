@@ -30,6 +30,14 @@ Erm, well, for now: yes. Being logged out while studying has got to be the most 
 
 If the app is found useful, I'm considering including some other features, such as registration code autocompletion, revamped CSS, and maybe tie the whole thing into my other UAH bullshit-away software: Chevaline Delta.
 
+#### Watch out for multiple browser gridlock
+
+tl;dr: Log out after you're done with Banner, or it'll bite you.
+
+This isn't a problem with my Firefox extension (surprise surprise). In fact, you can test it right now, without wtf-uah. Go to a computer and log in to banner, this is an "authentic" access, right? Go to another computer and log into banner again. Refresh both pages and watch the system take a shit. On your original, "authentic" machine, you've been logged out with an error "ERMAGERD, PIRATESES!". The supposedly malicious computer is still logged in though, with complete access to your account.... Schwing!
+
+The real problem is that both computers had authentic access, and this shit is inexcusable.
+
 #### Why is your app complete shit?
 
 You know what? I really considered making a beautiful javascript application. I was going to listen for log in, log out, and appropriately match keepalive calls to make the session persist. Then I realised that fighting bullshit with fire, while smelly, is way more fun. This program doesn't care if you're currently logged in or not, it will contact UAH every few minutes with a keep alive request regardless.
@@ -37,6 +45,7 @@ You know what? I really considered making a beautiful javascript application. I 
 #### What if I want to make your app *not* complete shit?
 
 Pull requests welcome. You may also email me or ge in contact some other way, the more people who use this app, the more likely I am to actually maintain it.
+
 
 ### Unrelated
 
