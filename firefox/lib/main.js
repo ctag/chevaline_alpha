@@ -23,7 +23,7 @@ var simplePrefs = require('sdk/simple-prefs');
 var keepaliveCount = 0;
 var URL1 = "https://sierra.uah.edu:9021/PROD/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu";
 var URL2 = "https://uah.instructure.com";
-var intervalId = timers.setInterval(keepaliveCall, 1000 * 120);
+var intervalId = timers.setInterval(keepaliveCall, 1000 * 240);
 
 /*
  * Setup code
