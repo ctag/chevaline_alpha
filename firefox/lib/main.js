@@ -7,6 +7,13 @@
  */
 
 /*
+ * TODO
+ * Clean up variables
+ * Stop page thrashing (replace all text, then push to html)
+ * Revise courses object
+ */
+
+/*
  * SDK tools
  */
 var tabs = require("sdk/tabs");
