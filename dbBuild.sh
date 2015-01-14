@@ -18,7 +18,9 @@ EXTENSION=".html"
 URL=${WEBSITE}${SEMESTER}${YEAR}${EXTENSION}
 TMPDIR="UAHsites"
 SITEFILE="webcrawl"
-COURSE_ITEMS=("section_type" "crn" "course_num" "course_sec" "course_title" "credit_hours" "max_enrollment" "cur_enrollment" "seats_available" "waitlist_num" "days" "time_start" "time_end" "building" "room" "instructor")
+# Course items:	"section_type" 	"crn" 	"course_num" 	"course_sec" 	"course_title" 	"credit_hours" 	"max_enrollment" 	"cur_enrollment" 	"seats_available" 	"waitlist_num" 	"days" 	"time_start" 	"time_end" "building" 	"room" "instructor"
+# Course vars:	"st"			"crn"	"cn"			"cs"			"ct"			"ch" 			"me"				"ce"				"sa"				"wn"			"d"		"ts"			"te"		"b"			"rm"	"i"
+COURSE_ITEMS=("st" "cr" "cn" "cs" "ct" "ch" "me" "ce" "sa" "wn" "dy" "ts" "te" "bl" "rm" "in")
 
 #
 # grab() function
@@ -101,7 +103,7 @@ build()
 			echo "],[" >> tmpDB
 		fi
 		
-		echo '"'${f}'",' >> tmpDB # Dept.
+		echo '"'${f}'"|,|' >> tmpDB # Dept.
 
 		#echo "[" >> tmpDB
 		
@@ -137,7 +139,7 @@ build()
 				string=${string}'"'${COURSE_ITEMS[step]}'":"'${data[step]}'"'
 				if [ $step -ne 15 ]
 				then
-					string=${string}','
+					string=${string}'_,_'
 				fi
 			done
 			
@@ -145,7 +147,7 @@ build()
 			
 			if [ $FLAG_LINE -ne 0 ]
 			then
-				string=','${string}
+				string=' , '${string}
 			else
 				FLAG_LINE=1
 			fi
@@ -206,8 +208,8 @@ clean
 build
 cd ..
 rm -r $TMPDIR
-exit
 reformat
+exit
 if [ ! -f Campus.db ]
 then
 	touch Campus.db
