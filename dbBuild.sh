@@ -88,22 +88,26 @@ build()
 	
 	FLAG_F=0
 	
+	string=''
+	
 	for f in `ls`;
 	do
+	
+		if [ $FLAG_F -eq 1 ]
+		then
+			#echo '],[' >> tmpDB
+			string=${string}'],['
+		fi
+		
 		if [ $FLAG_F -eq 0 ]
 		then
-			echo "[[" >> tmpDB
+			#echo '[[' >> tmpDB
+			string=${string}'[['
 			FLAG_F=1
 		fi
 		
-		if [ $FLAG_F -eq 1 ]
-		then
-			FLAG_F=2
-		else
-			echo "],[" >> tmpDB
-		fi
-		
-		echo '"'${f}'"|,|' >> tmpDB # Dept.
+		#echo '"'${f}'"' >> tmpDB # Dept.
+		string=${string}'"'${f}'"'
 
 		#echo "[" >> tmpDB
 		
@@ -132,43 +136,32 @@ build()
 			
 			#echo ${data[*]}
 			
-			string="{"
+			string=${string}'{'
 			
 			for step in {0..15}
 			do
 				string=${string}'"'${COURSE_ITEMS[step]}'":"'${data[step]}'"'
 				if [ $step -ne 15 ]
 				then
-					string=${string}'_,_'
+					string=${string}',' # comma between class members
 				fi
 			done
 			
-			string=${string}"}"
+			string=${string}'}'
 			
-			if [ $FLAG_LINE -ne 0 ]
-			then
-				string=' , '${string}
-			else
-				FLAG_LINE=1
-			fi
+				string=','${string} # comma between entire class objects
 			
-			echo ${string} >> tmpDB
-			
-			#echo "$(paste -d "," [a-p])" >> tmpDB
-			#echo '{"'${a}'","'${b}'","'${c}'","'${d}'","'${e}'","'${f}'","'${g}'","'${h}'","'${i}'","'${j}'","'${k}'","'${l}'","'${m}'","'${n}'","'${o}'","'${p}'"}';
-			#$(rm [a-p])
-			#`rm $f`
 		done <$f
 		
 	done
 	
-	echo "]" >> tmpDB
+	#echo "]]" >> tmpDB
+	string=${string}']]'
 	
-	echo "]" >> tmpDB
+	echo ${string} > tmpDB
 	
-	`egrep -v "HOSP|COMM|A&M|PINP" tmpDB > tmp`
-	#tr -d ' \t\r\f' <tmp >../../Database
-	`cat tmp >> ../../Database`
+	tr -d ' \t\r\f\n' <tmpDB >../../Database
+	#`cat tmp >> ../../Database`
 	cd -
 }
 
@@ -207,7 +200,7 @@ grab
 clean
 build
 cd ..
-rm -r $TMPDIR
+#rm -r $TMPDIR
 reformat
 exit
 if [ ! -f Campus.db ]
