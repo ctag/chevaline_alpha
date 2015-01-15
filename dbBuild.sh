@@ -9,6 +9,12 @@
 #
 
 #
+# Global Flags
+#
+DO_STOPWATCH="t"
+#DO_DEBUG="t"
+
+#
 # Global Variables
 #
 WEBSITE="http://www.uah.edu/cgi-bin/schedule.pl?file="
@@ -18,9 +24,18 @@ EXTENSION=".html"
 URL=${WEBSITE}${SEMESTER}${YEAR}${EXTENSION}
 TMPDIR="UAHsites"
 SITEFILE="webcrawl"
+START_TIME=-1
 # Course items:	"section_type" 	"crn" 	"course_num" 	"course_sec" 	"course_title" 	"credit_hours" 	"max_enrollment" 	"cur_enrollment" 	"seats_available" 	"waitlist_num" 	"days" 	"time_start" 	"time_end" "building" 	"room" "instructor"
 # Course vars:	"st"			"crn"	"cn"			"cs"			"ct"			"ch" 			"me"				"ce"				"sa"				"wn"			"d"		"ts"			"te"		"b"			"rm"	"i"
 COURSE_ITEMS=("st" "cr" "cn" "cs" "ct" "ch" "me" "ce" "sa" "wn" "dy" "ts" "te" "bl" "rm" "in")
+
+#
+# Setup stopwatch
+#
+if [ ${DO_STOPWATCH} ] # Check that DO_STOPWATCH is set
+then
+	START_TIME=$SECONDS
+fi
 
 #
 # grab() function
@@ -32,6 +47,10 @@ COURSE_ITEMS=("st" "cr" "cn" "cs" "ct" "ch" "me" "ce" "sa" "wn" "dy" "ts" "te" "
 #
 grab()
 {
+	if [ ${DO_STOPWATCH} ]
+	then
+		FUNCTION_TIME=$(date +%N)
+	fi
 	wget $URL -O tmp
 	cat tmp | grep 'href' | grep 'segment' | cut -d "\"" -f 2 | sed -e 's/^/uah.edu/g' > $SITEFILE
 	mkdir classes
@@ -41,10 +60,15 @@ grab()
 	do
 		echo "Link: $line"
 		COURSE="`echo $line | cut -d "=" -f 3`"
-		wget $line -O $COURSE
+		#wget $line -O $COURSE
 	done
 	cd -
-	#rm $SITEFILE
+	if [ ${DO_STOPWATCH} ]
+	then
+		FUNCTION_TIME_END=`date +%N`
+		FUNCTION_TIME=`expr ${FUNCTION_TIME_END} - ${FUNCTION_TIME}`
+		echo 'grab() completed in '${FUNCTION_TIME}'ns.'
+	fi
 }
 
 #
@@ -55,6 +79,12 @@ grab()
 #
 clean()
 {
+	if [ ${DO_STOPWATCH} ]
+	then
+		FUNCTION_TIME=$(date +%N)
+	fi
+	
+	echo 'executing clean()'
 	cd classes
 	for f in `ls`;
 	do
@@ -70,6 +100,11 @@ clean()
 		fi
 	done
 	cd -
+	
+	if [ ${DO_STOPWATCH} ]
+	then
+		echo 'clean() completed in '${date +%N}-${FUNCTION_TIME}'.'
+	fi
 }
 
 #
@@ -83,7 +118,13 @@ clean()
 #
 build()
 {
-	#cd UAHsites
+	if [ ${DO_STOPWATCH} ]
+	then
+		FUNCTION_TIME=$(date +%N)
+	fi
+	
+	echo 'executing build()'
+	
 	cd classes
 	
 	FLAG_F=0
@@ -163,6 +204,11 @@ build()
 	tr -d ' \t\r\f\n' <tmpDB >../../Database
 	#`cat tmp >> ../../Database`
 	cd -
+	
+	if [ ${DO_STOPWATCH} ]
+	then
+		echo 'build() completed in '${date +%N}-${FUNCTION_TIME}'.'
+	fi
 }
 
 #
@@ -202,14 +248,21 @@ build
 cd ..
 #rm -r $TMPDIR
 reformat
+
+if [ ${DO_STOPWATCH} ]
+then
+	echo "Program completed in "${SECONDS}-START_TIME'.'
+fi
+
 exit
+
+
 if [ ! -f Campus.db ]
 then
 	touch Campus.db
 	`sqlite3 Campus.db "CREATE TABLE classes (crn INTEGER, course TEXT, sec TEXT, title TEXT, credit float, max integer, enrolled integer, avail integer, wait integer, days TEXT, start INT, end INT, building TEXT, room TEXT, instructor TEXT);"`
 	`echo -e '.separator "@"\n.import Database classes' | sqlite3 Campus.db`
 fi
-
 
 
 
