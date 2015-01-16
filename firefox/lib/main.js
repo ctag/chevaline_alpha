@@ -56,6 +56,7 @@ getCourses();
  */
 
 //tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
+tabs.open("about:addons");
 
 /*
 menuitem.Menuitem({
