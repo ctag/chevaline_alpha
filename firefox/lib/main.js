@@ -33,23 +33,44 @@ var semester = simplePrefs.prefs['semester'];
 /*
  * Methods
  */
-if (!ss.courses)
-{
-	//
-}
 
 function getCourses () {
-console.log("sending berocs.com request.");
-urlRequest.Request({
+	console.log("getCourses(): sending berocs.com request.");
+	urlRequest.Request({
 	url: "http://berocs.com/chevaline/courses.json",
-	onComplete: function (result) {
+	onComplete: function saveCoursesData (result) {
 		console.log("berocs.com result: ", result);
-		console.log("Attempting to parse manually: ", JSON.parse(result.text));
+		ss.courses=result.json;
+		console.log("ss.courses: ", ss.courses);
+		makeIndex();
 	}
-}).get();
+	}).get();
+	
 }
 
-getCourses();
+function makeIndex () {
+	console.log('makeIndex(): generating index.');
+	if (!ss.courses)
+	{
+		console.log('ss.courses not found, aborting makeIndex().');
+		return;
+	}
+	
+	var course_num = ss.courses.length;
+	console.log("course len: ", course_num);
+	return;
+	
+	//ss.courseIndex=
+	
+}
+
+if (!ss.courses)
+{
+	console.log("Large course object not found, fetching new courses.json");
+	getCourses();
+} else {
+	console.log('ss.courses found: ', ss.courses);
+}
 
 /*
  * Execution

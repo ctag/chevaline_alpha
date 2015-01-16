@@ -1,14 +1,14 @@
 {
-  "name": "wtf_uah",
+  "name": "chevaline_alpha",
   "title": "Chevaline Alpha",
   "id": "jid1-rApnWaAki9RlGA",
-  "description": "Web Friend for UAH!",
+  "description": "This addon is a site assistant for UAH webpages. It will create clickable links from all course references where you can learn more about the class.",
   "author": "Christopher [ctag] Bero",
   "license": "MPL 2.0",
-  "version": "0.3",
+  "version": "2015.1.16",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
-		"cross-domain-content": ["https://sso.uah.edu"]
+		"cross-domain-content": ["https://uah.edu"]
   },
   "preferences": [{
 		"name": "year",
