@@ -1,0 +1,18 @@
+Generated File. Do not edit.
+
+[HEADER]
+Version:0.17:$
+Arch:x86_64-gcc3:$
+
+[PLUGINS]
+libfreshwrapper-pepperflash.so:$
+/usr/lib/mozilla/plugins/libfreshwrapper-pepperflash.so:$
+16.0.0.257:$
+1420490280000:0:0:0:$
+Shockwave Flash 16.0 r0:$
+Shockwave Flash:$
+2
+0:application/x-shockwave-flash:Shockwave Flash:swf:$
+1:application/futuresplash:FutureSplash Player:spl:$
+
+[INVALID]
