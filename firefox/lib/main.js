@@ -32,7 +32,8 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 var year = simplePrefs.prefs['year'];
 var semester = simplePrefs.prefs['semester'];
 var mainPanel = panel.Panel({
-	contentURL: self.data.url("panel.html"),
+	contentURL: self.data.url("buttonPanel.html"),
+	contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("buttonPanel.js")],
 	onHide: panelHidden
 });
 var mainButton = ToggleButton({
