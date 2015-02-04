@@ -2,13 +2,14 @@
  * Chevaline Alpha
  * A Firefox extension
  * By: Christopher [ctag] Bero
- * 
+ *
  * I hope you find it utilitous!
  */
 
 /*
  * SDK tools
  */
+
 var tabs = require("sdk/tabs");
 var pageMod = require("sdk/page-mod");
 var self = require("sdk/self");
@@ -23,12 +24,15 @@ var panel = require('sdk/panel');
 /*
  * Low level or 3rd party tools
  */
+
 var menuitem = require("menuitems");
 const {XMLHttpRequest} = require("sdk/net/xhr");
 
 /*
  * Global Vars
  */
+
+var debug = true;
 var year = simplePrefs.prefs['year'];
 var semester = simplePrefs.prefs['semester'];
 var mainPanel = panel.Panel({
@@ -50,7 +54,7 @@ var mainButton = ToggleButton({
 /*
  * Items in browser's alt menus
  */
- 
+
 menuitem.Menuitem({
 	id: "panel button",
 	menuid: "menu_ToolsPopup",
@@ -87,12 +91,14 @@ function buttonChanged (state) {
 /*
  * Setup
  */
- 
+
 if (!ss.courses)
 {
-	console.log("Large course object not found, fetching new courses.json");
+  if (debug) {
+	  console.log("Large course object not found, fetching new courses.json");
+  }
 	getCourses();
-} else {
+} else if (debug) {
 	console.log('ss.courses found: ', ss.courses);
 }
 
@@ -101,8 +107,10 @@ if (!ss.courses)
  */
 
 function getCourses () {
-	//console.time("getCourses");
-	console.log("getCourses(): sending berocs.com request.");
+  if (debug) {
+	  console.time("getCourses");
+    console.log("getCourses(): sending berocs.com request.");
+  }
 	urlRequest.Request({
 	url: "http://berocs.com/chevaline/courses.txt",
 	onComplete: function saveCoursesData (result) {
@@ -110,37 +118,45 @@ function getCourses () {
 		ss.courses=result.json;
 		console.log("ss.courses: ", ss.courses);
 		makeIndex();
-		//console.timeEnd("getCourses");
+    if (debug) {
+		  console.timeEnd("getCourses");
+    }
 	}
 	}).get();
 }
 
 function makeIndex () {
-	console.time('makeIndex');
-	console.log('makeIndex(): generating index.');
-	
+  if (debug) {
+	  console.time('makeIndex');
+	  console.log('makeIndex(): generating index.');
+  }
+
 	if (!ss.courses)
 	{
-		console.log('ss.courses not found, aborting makeIndex().');
+    if (debug) {
+		  console.log('ss.courses not found, aborting makeIndex().');
+    }
 		return;
 	}
-	
+
 	ss.coursesIndex = {};
 	ss.coursesTimeStamp = ss.courses[0][0];
-	console.log("ss.courses generated on: ", ss.coursesTimeStamp);
-	
+  if (debug) {
+	  console.log("ss.courses generated on: ", ss.coursesTimeStamp);
+  }
+
 	for (var i = 1; i < ss.courses.length; i++)
 	{
 		var subcollege = ss.courses[i][0];
 		//console.log("subcollege: ", subcollege);
 		ss.coursesIndex[subcollege] = {};
-		
+
 		for (var x = 1; x < ss.courses[i].length; x++)
 		{
 			var course_crn = ss.courses[i][x][1];
 			var course_num = ss.courses[i][x][2];
 			var course_sec = ss.courses[i][x][3];
-			
+
 			ss.coursesIndex[subcollege][course_crn] = x;
 			if (!ss.coursesIndex[subcollege][course_num])
 			{
@@ -148,31 +164,41 @@ function makeIndex () {
 			}
 			ss.coursesIndex[subcollege][course_num][course_sec] = x;
 		}
-		
+
 	}
-	console.log("makeIndex(): index created: ", ss.coursesIndex);
-	console.timeEnd('makeIndex');
+  if (debug) {
+	  console.log("makeIndex(): index created: ", ss.coursesIndex);
+	  console.timeEnd('makeIndex');
+  }
 }
 
 function traverseIndex () {
-	console.time('traverseIndex');
-	console.log('traverseIndex(): printing the index.');
-	
+  if (debug) {
+	  console.time('traverseIndex');
+	  console.log('traverseIndex(): printing the index.');
+  }
+
 	if (!ss.courses)
 	{
-		console.log("traverseIndex(): ss.courses missing, aborting function");
+    if (debug) {
+		  console.log("traverseIndex(): ss.courses missing, aborting function");
+    }
 		return;
 	}
-	
+
 	for (var x = 1; x < ss.courses.length; x++)
 	{
 		for (var y = 1; y < ss.courses[x].length; y++)
 		{
-			console.log('course: ', ss.coursesIndex[x][y]);
+      if (debug) {
+			  console.log('course: ', ss.coursesIndex[x][y]);
+      }
 		}
 	}
-	
-	console.timeEnd('traverseIndex');
+
+  if (debug) {
+	  console.timeEnd('traverseIndex');
+  }
 }
 
 mainPanel.port.on('doThing', function () { console.log("did thing."); });
@@ -181,8 +207,10 @@ mainPanel.port.on('doThing', function () { console.log("did thing."); });
  * Execution
  */
 
-//tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
-tabs.open("about:addons");
+if (debug) {
+  tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
+  tabs.open("about:addons");
+}
 
 if (ss.courses && ss.courseIndex)
 {
@@ -193,6 +221,14 @@ pageMod.PageMod({
 });
 }
 
+pageMod.PageMod({
+  include: "https://sso.uah.edu/cas/*",
+  contentScriptWhen: "end",
+  contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("sso_actual.js")],
+  onAttach: function (worker) {
+    worker.port.emit("sendCredentials", simplePrefs.prefs['sso_username'], simplePrefs.prefs['sso_password']);
+  }
+});
 
 
 
