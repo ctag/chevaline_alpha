@@ -4,8 +4,8 @@
   "id": "jid1-rApnWaAki9RlGA",
   "description": "This addon is a site assistant for UAH webpages. It will create clickable links from all course references where you can learn more about the class.",
   "author": "Christopher [ctag] Bero",
-  "license": "MPL 2.0",
-  "version": "2015.1.16",
+  "license": "GPL v3",
+  "version": "2015.2.3",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
@@ -20,5 +20,22 @@
 		"title": "Semester to pull courses for",
 		"type": "string",
 		"value": "sprg"
-  }]
+  },{
+		"name": "sso_enabled",
+		"title": "Enable the real SSO?",
+		"type": "bool",
+		"value": "true"
+  },{
+		"name": "sso_username",
+		"title": "SSO/Canvas username",
+		"type": "string",
+		"value": "xxx0001"
+  },{
+		"name": "sso_password",
+		"title": "SSO/Canvas password",
+		"type": "string",
+		"value": "password"
+  }
+
+]
 }
