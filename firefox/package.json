@@ -2,10 +2,10 @@
   "name": "chevaline_alpha",
   "title": "Chevaline Alpha",
   "id": "jid1-rApnWaAki9RlGA",
-  "description": "This addon is a site assistant for UAH webpages. It will create clickable links from all course references where you can learn more about the class.",
+  "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.3",
+  "version": "2015.2.9",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
@@ -22,20 +22,9 @@
 		"value": "sprg"
   },{
 		"name": "sso_enabled",
-		"title": "Enable the real SSO?",
+		"title": "Enable the 'Real SSO' feature? This will allow you to specify SSO credentials from the tools alt menu and then actually use Canvas!",
 		"type": "bool",
-		"value": "true"
-  },{
-		"name": "sso_username",
-		"title": "SSO/Canvas username",
-		"type": "string",
-		"value": "xxx0001"
-  },{
-		"name": "sso_password",
-		"title": "SSO/Canvas password",
-		"type": "string",
-		"value": "password"
+		"value": true
   }
-
 ]
 }

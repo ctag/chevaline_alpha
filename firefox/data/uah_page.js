@@ -1,6 +1,8 @@
 //UAH page modifier
 
-console.log("page matches, running uah_page.js");
+var debug = false;
+
+if (debug) console.log("page matches, running uah_page.js");
 
 //var data = $.parseJSON(courses);
 //console.log("course: " + courses.length);
