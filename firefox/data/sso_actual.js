@@ -15,8 +15,6 @@ self.port.on("sendCredentials", function(user, pass) {
   login(username, password);
 });
 
-);
-
 function login (username, password) {
   $('#username').css("disabled", "true");
   $('#password').css("disabled", "true");

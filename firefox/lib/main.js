@@ -35,6 +35,7 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 var debug = true;
 var year = simplePrefs.prefs['year'];
 var semester = simplePrefs.prefs['semester'];
+var ssoEnabled = simplePrefs.prefs['sso_enabled'];
 var mainPanel = panel.Panel({
 	contentURL: self.data.url("buttonPanel.html"),
 	contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("buttonPanel.js")],
@@ -51,6 +52,13 @@ var mainButton = ToggleButton({
 	onChange: buttonChanged
 });
 
+function update_ssoEnabled ()
+{
+	ssoEnabled = simplePrefs.prefs['sso_enabled'];
+}
+
+simplePrefs.on("sso_enabled", update_ssoEnabled);
+
 /*
  * Items in browser's alt menus
  */
@@ -62,6 +70,16 @@ menuitem.Menuitem({
 	onCommand: showPanel(),
 	insertbefore: "menu_pageInfo"
 });
+if (ssoEnabled == true)
+{
+	menuitem.Menuitem({
+		id: "sso_credentials",
+		menuid: "menu_ToolsPopup",
+		label: "Set UAH SSO Credentials",
+		onCommand: showPanel(),
+		insertbefore: "menu_pageInfo"
+	});
+}
 
 /*
  * Drop down pane attached to addon's button
@@ -226,7 +244,7 @@ pageMod.PageMod({
   contentScriptWhen: "end",
   contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("sso_actual.js")],
   onAttach: function (worker) {
-    worker.port.emit("sendCredentials", simplePrefs.prefs['sso_username'], simplePrefs.prefs['sso_password']);
+    //worker.port.emit("sendCredentials", simplePrefs.prefs['sso_username'], simplePrefs.prefs['sso_password']);
   }
 });
 
