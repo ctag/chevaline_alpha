@@ -1,8 +1,4 @@
 #!/bin/bash
 
-cfx run -p /home/berocs/Documents/chevaline_alpha/firefox_profiledir
-
-
-
-
+cfx run -p /tmp/firefox_profiledir
 
