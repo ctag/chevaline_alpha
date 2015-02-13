@@ -20,6 +20,7 @@ var simplePrefs = require('sdk/simple-prefs');
 var ss = require('sdk/simple-storage').storage;
 var { ToggleButton } = require('sdk/ui/button/toggle');
 var panel = require('sdk/panel');
+var passwords = require('sdk/passwords');
 
 /*
  * Low level or 3rd party tools
@@ -219,7 +220,43 @@ function traverseIndex () {
   }
 }
 
-mainPanel.port.on('doThing', function () { console.log("did thing."); });
+function sso_addPassword(_username, _password)
+{
+	sso_clearCredentials();
+	passwords.store({
+		realm: "chevaline_sso",
+		username: _username,
+		password: _password
+	});
+}
+
+function sso_clearCredentials() {
+	passwords.search({
+		realm: "chevaline_sso",
+		onComplete: function (credentials) {
+			credentials.forEach(passwords.remove);
+		}
+	});
+}
+
+function sso_getUsername()
+{
+  passwords.search({
+    realm: "chevaline_sso",
+    onComplete: function (credentials) {
+      console.log(credentials);
+    }
+  });
+}
+
+mainPanel.port.on('doThing', function () {
+  sso_getUsername();
+  sso_clearCredentials();
+});
+
+mainPanel.port.on('sso_create', function (user, pass) {
+	sso_addPassword(user, pass);
+});
 
 /*
  * Execution
@@ -244,7 +281,13 @@ pageMod.PageMod({
   contentScriptWhen: "end",
   contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("sso_actual.js")],
   onAttach: function (worker) {
-    //worker.port.emit("sendCredentials", simplePrefs.prefs['sso_username'], simplePrefs.prefs['sso_password']);
+	  //var credentials = "init";
+	  passwords.search({
+		  realm: "chevaline_sso",
+		  onComplete: function (cred) {
+			  worker.port.emit("sendCredentials", cred);
+		  }
+	  });
   }
 });
 

@@ -7,12 +7,20 @@ Arch:x86_64-gcc3:$
 [PLUGINS]
 libfreshwrapper-pepperflash.so:$
 /usr/lib/mozilla/plugins/libfreshwrapper-pepperflash.so:$
-16.0.0.257:$
+16.0.0.296:$
 1420490280000:0:0:0:$
 Shockwave Flash 16.0 r0:$
 Shockwave Flash:$
 2
 0:application/x-shockwave-flash:Shockwave Flash:swf:$
 1:application/futuresplash:FutureSplash Player:spl:$
+libx2goplugin.so:$
+/usr/lib/mozilla/plugins/libx2goplugin.so:$
+:$
+1417288980000:0:0:0:$
+Allows you to start X2Go session in a webbrowser:$
+X2GoClient Plug-in 4.0.3.1:$
+1
+0:application/x2go:Configuration File for X2Go Session:x2go:$
 
 [INVALID]
