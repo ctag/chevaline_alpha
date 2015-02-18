@@ -1,14 +1,24 @@
 <html>
 
+<style>
+	#do_testCall {
+		border: 1px solid #000;
+		display: inline-block;astyle
+		margin: auto;
+	}
+</style>
+
 <br>
 
-<div id='do_traverseIndex' style="border: 1px solid #000; display: inline-block;"><a href="#">Traverse</a></div>
+    <div id='do_testCall'><a href="#">Test Button</a></div>
+    <div id='do_test_getCredentials'><a href="#">Get SSO</a></div>
+    <div id='do_test_rmCredentials'><a href="#">Clear SSO</a></div>
 <br>
-    <form id='sso_form'>
-        Account: <input id='sso_form_user' type='text'>
-        Password: <input id='sso_form_pass' type='password'>
-        <input id='sso_form_submit' type='submit' value='Submit'>
-    </form>
+
+<form id='sso_form'>
+	SSO Password: <input id='sso_form_pass' type='password'>
+	<input id='sso_form_submit' type='submit' value='Submit'>
+</form>
 
 </html>
 

@@ -33,15 +33,19 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
  * Global Vars
  */
 
-var debug = true;
+var debug = false;
 var year = simplePrefs.prefs['year'];
 var semester = simplePrefs.prefs['semester'];
 var ssoEnabled = simplePrefs.prefs['sso_enabled'];
+var ssoUser = simplePrefs.prefs['sso_user'];
+var ssoPageMod;
+
 var mainPanel = panel.Panel({
 	contentURL: self.data.url("buttonPanel.html"),
 	contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("buttonPanel.js")],
 	onHide: panelHidden
 });
+
 var mainButton = ToggleButton({
 	id: 'chevaline-button',
 	label: 'Chevaline Button',
@@ -53,12 +57,24 @@ var mainButton = ToggleButton({
 	onChange: buttonChanged
 });
 
-function update_ssoEnabled ()
+function handle_simplePrefs (_pref)
 {
-	ssoEnabled = simplePrefs.prefs['sso_enabled'];
+  if (_pref === "sso_enabled")
+  {
+    ssoEnabled = simplePrefs.prefs['sso_enabled'];
+    if (ssoEnabled) {
+      setupSSOpagemod();
+    } else {
+      ssoPageMod.destroy();
+    }
+  } else if (_pref === "sso_user") {
+    ssoUser = simplePrefs.prefs['sso_user'];
+    sso_setCredentials();
+  }
 }
 
-simplePrefs.on("sso_enabled", update_ssoEnabled);
+simplePrefs.on("sso_enabled", handle_simplePrefs);
+simplePrefs.on("sso_user", handle_simplePrefs);
 
 /*
  * Items in browser's alt menus
@@ -113,9 +129,7 @@ function buttonChanged (state) {
 
 if (!ss.courses)
 {
-  if (debug) {
-	  console.log("Large course object not found, fetching new courses.json");
-  }
+  if (debug) { console.log("Large course object not found, fetching new courses.json"); }
 	getCourses();
 } else if (debug) {
 	console.log('ss.courses found: ', ss.courses);
@@ -127,15 +141,15 @@ if (!ss.courses)
 
 function getCourses () {
   if (debug) {
-	  console.time("getCourses");
-    console.log("getCourses(): sending berocs.com request.");
+	console.time("getCourses");
+	console.log("getCourses(): sending berocs.com request.");
   }
 	urlRequest.Request({
 	url: "http://berocs.com/chevaline/courses.txt",
 	onComplete: function saveCoursesData (result) {
 		console.log("berocs.com result: ", result);
 		ss.courses=result.json;
-		console.log("ss.courses: ", ss.courses);
+		if (debug) console.log("ss.courses: ", ss.courses);
 		makeIndex();
     if (debug) {
 		  console.timeEnd("getCourses");
@@ -152,9 +166,7 @@ function makeIndex () {
 
 	if (!ss.courses)
 	{
-    if (debug) {
-		  console.log('ss.courses not found, aborting makeIndex().');
-    }
+		if (debug) console.log('ss.courses not found, aborting makeIndex().');
 		return;
 	}
 
@@ -220,43 +232,56 @@ function traverseIndex () {
   }
 }
 
-function sso_addPassword(_username, _password)
+function sso_setCredentials(_password)
 {
-	sso_clearCredentials();
-	passwords.store({
-		realm: "chevaline_sso",
-		username: _username,
-		password: _password
-	});
+  if (debug) console.log("sso_setCredentials: ", ssoUser, _password);
+    sso_clearCredentials(function (_cred) {
+      passwords.store({
+      realm: "chevaline_sso",
+      username: ssoUser,
+      password: _password,
+      onError: function (_err) {
+        if (debug) console.log("sso cred add error: ", _err.message);
+      }
+    });
+  });
 }
 
-function sso_clearCredentials() {
-	passwords.search({
-		realm: "chevaline_sso",
-		onComplete: function (credentials) {
-			credentials.forEach(passwords.remove);
-		}
-	});
-}
-
-function sso_getUsername()
+function sso_clearCredentials(_callback)
 {
   passwords.search({
     realm: "chevaline_sso",
-    onComplete: function (credentials) {
-      console.log(credentials);
+    onComplete: function (_cred) {
+      _cred.forEach(passwords.remove);
+      if (debug) console.log("sso credentials: ", _cred);
+      _callback(_cred);
+    },
+    onError: function (_err) {
+      if (debug) console.log("sso cred add error: ", _err.message);
     }
   });
 }
 
-mainPanel.port.on('doThing', function () {
-  sso_getUsername();
-  sso_clearCredentials();
+function sso_getCredentials()
+{
+  passwords.search({
+    realm: "chevaline_sso",
+    username: ssoUser,
+    onComplete: function (_cred) {
+        if (debug) console.log("sso credentials: ", _cred);
+    },
+    onError: function (_err) {
+      if (debug) console.log("sso cred add error: ", _err.message);
+    }
+  });
+}
+
+mainPanel.port.on('testCall', function () {
+  if (debug) console.log("testCall called");
+  sso_getCredentials();
 });
 
-mainPanel.port.on('sso_create', function (user, pass) {
-	sso_addPassword(user, pass);
-});
+mainPanel.port.on('sso_set', sso_setCredentials);
 
 /*
  * Execution
@@ -276,22 +301,30 @@ pageMod.PageMod({
 });
 }
 
-pageMod.PageMod({
+if (ssoEnabled)
+{
+	setupSSOpagemod();
+}
+
+function setupSSOpagemod ()
+{
+ssoPageMod = pageMod.PageMod({
   include: "https://sso.uah.edu/cas/*",
   contentScriptWhen: "end",
   contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("sso_actual.js")],
   onAttach: function (worker) {
-	  //var credentials = "init";
-	  passwords.search({
-		  realm: "chevaline_sso",
-		  onComplete: function (cred) {
-			  worker.port.emit("sendCredentials", cred);
-		  }
-	  });
+		passwords.search({
+			realm: "chevaline_sso",
+      username: ssoUser,
+			onComplete: function (credentials) {
+        if (credentials) {
+				  worker.port.emit("sendCredentials", credentials);
+        }
+			}
+		});
   }
 });
-
-
+}
 
 
 
