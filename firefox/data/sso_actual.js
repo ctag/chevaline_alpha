@@ -9,11 +9,11 @@ if (debug) {
 self.port.on("sendCredentials", function(credentials) {
   if (debug) {
     console.log("receiving credentials!");
+    console.log("sso_actual, ", credentials[0]);
   }
-  console.log(credentials);
   var username = credentials[0].username;
   var password = credentials[0].password;
-  console.log("credentials: " + username + ", " + password);
+  if (debug) console.log("credentials: " + username + ", " + password);
   login(username, password);
 });
 
