@@ -1,10 +1,11 @@
 /* SSO.JS - Single Sign On Script
 */
 
-var passwords = require('sdk/passwords');
-var simplePrefs = require('sdk/simple-prefs');
+var sdk = new Object();
+sdk.passwords = require('sdk/passwords');
+sdk.simplePrefs = require('sdk/simple-prefs');
 
-var ssoUser = '';
+var ssoUser = simplePrefs.prefs['sso_user'];
 
 var debug = simplePrefs.prefs['debug'];
 
@@ -12,6 +13,11 @@ function sso_setUsername(_user, _callback)
 {
   if (debug) console.log("sso_setUsername: ", _user);
   ssoUser = _user;
+}
+
+function sso_getUsername()
+{
+  return ssoUser;
 }
 
 function sso_setPassword(_password, _callback)
@@ -22,9 +28,9 @@ function sso_setPassword(_password, _callback)
   }
 
   function _addCred () {
-    passwords.store({
+    sdk.passwords.store({
       realm: "chevaline_sso",
-      username: _user,
+      username: ssoUser,
       password: _password,
       onError: _error
     });
@@ -45,7 +51,7 @@ function sso_clearCredentials(_callback)
     _callback(_cred);
   }
 
-  passwords.search({
+  sdk.passwords.search({
     realm: "chevaline_sso",
     onComplete: _onComplete,
     onError: _error
@@ -63,7 +69,7 @@ function sso_getCredentials(_callback)
     _callback(_cred);
   }
 
-  passwords.search({
+  sdk.passwords.search({
     realm: "chevaline_sso",
     username: ssoUser,
     onComplete: _onComplete,
@@ -78,5 +84,6 @@ function sso_handleError (_source, _err)
 
 exports.SetUsername = sso_setUsername;
 exports.SetPassword = sso_setPassword;
-exports.Get = sso_getCredentials;
+exports.GetCredentials = sso_getCredentials;
+exports.GetUsername = sso_getUsername;
 exports.Clear = sso_clearCredentials;
