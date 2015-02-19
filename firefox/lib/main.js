@@ -1,14 +1,19 @@
 /*
- * Chevaline Alpha
- * A Firefox extension
- * By: Christopher [ctag] Bero
- *
- * I hope you find it utilitous!
+* Chevaline Alpha
+* A Firefox extension
+* By: Christopher [ctag] Bero
+*
+* I hope you find it utilitous!
+*/
+
+/* TODO
+ * Fix Atom's comment formatting
+ * Interact with SSO page
  */
 
 /*
- * SDK tools
- */
+* SDK tools
+*/
 
 var sdk = new Object();
 sdk.tabs = require("sdk/tabs");
@@ -24,16 +29,16 @@ sdk.panel = require('sdk/panel');
 sdk.passwords = require('sdk/passwords');
 
 /*
- * Low level or 3rd party tools
- */
+* Low level or 3rd party tools
+*/
 
 var menuitem = require("menuitems");
 var sso = require("./sso.js");
 const {XMLHttpRequest} = require("sdk/net/xhr");
 
 /*
- * Global Vars
- */
+* Global Vars
+*/
 
 var debug = false;
 var year = sdk.simplePrefs.prefs['year'];
@@ -61,25 +66,25 @@ var mainButton = ToggleButton({
 
 function handle_simplePrefs (_pref)
 {
-  if (_pref === "sso_enabled")
-  {
-    ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
-    if (ssoEnabled) {
-      setupSSOpagemod();
-    } else {
-      ssoPageMod.destroy();
-    }
-  } else if (_pref === "sso_user") {
-    sso_setCredentials(sdk.simplePrefs.prefs['sso_user']);
-  }
+	if (_pref === "sso_enabled")
+	{
+		ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
+		if (ssoEnabled) {
+			setupSSOpagemod();
+		} else {
+			ssoPageMod.destroy();
+		}
+	} else if (_pref === "sso_user") {
+		sso_setCredentials(sdk.simplePrefs.prefs['sso_user']);
+	}
 }
 
 sdk.simplePrefs.on("sso_enabled", handle_simplePrefs);
 sdk.simplePrefs.on("sso_user", handle_simplePrefs);
 
 /*
- * Items in browser's alt menus
- */
+* Items in browser's alt menus
+*/
 
 menuitem.Menuitem({
 	id: "sdk.panel button",
@@ -100,8 +105,8 @@ if (ssoEnabled == true)
 }
 
 /*
- * Drop down pane attached to addon's button
- */
+* Drop down pane attached to addon's button
+*/
 
 function showPanel () {
 	mainPanel.show({
@@ -114,8 +119,8 @@ function panelHidden () {
 }
 
 /*
- * Toggle button on browser bar
- */
+* Toggle button on browser bar
+*/
 
 function buttonChanged (state) {
 	if (state.checked)
@@ -125,45 +130,45 @@ function buttonChanged (state) {
 }
 
 /*
- * Setup
- */
+* Setup
+*/
 
 if (!sdk.ss.courses)
 {
-  if (debug) { console.log("Large course object not found, fetching new courses.json"); }
+	if (debug) { console.log("Large course object not found, fetching new courses.json"); }
 	getCourses();
 } else if (debug) {
 	console.log('sdk.ss.courses found: ', sdk.ss.courses);
 }
 
 /*
- * Methods
- */
+* Methods
+*/
 
 function getCourses () {
-  if (debug) {
-	console.time("getCourses");
-	console.log("getCourses(): sending berocs.com request.");
-  }
-	sdk.urlRequest.Request({
-	url: "http://berocs.com/chevaline/courses.txt",
-	onComplete: function saveCoursesData (result) {
-		console.log("berocs.com result: ", result);
-		sdk.ss.courses=result.json;
-		if (debug) console.log("sdk.ss.courses: ", sdk.ss.courses);
-		makeIndex();
-    if (debug) {
-		  console.timeEnd("getCourses");
-    }
+	if (debug) {
+		console.time("getCourses");
+		console.log("getCourses(): sending berocs.com request.");
 	}
+	sdk.urlRequest.Request({
+		url: "http://berocs.com/chevaline/courses.txt",
+		onComplete: function saveCoursesData (result) {
+			console.log("berocs.com result: ", result);
+			sdk.ss.courses=result.json;
+			if (debug) console.log("sdk.ss.courses: ", sdk.ss.courses);
+			makeIndex();
+			if (debug) {
+				console.timeEnd("getCourses");
+			}
+		}
 	}).get();
 }
 
 function makeIndex () {
-  if (debug) {
-	  console.time('makeIndex');
-	  console.log('makeIndex(): generating index.');
-  }
+	if (debug) {
+		console.time('makeIndex');
+		console.log('makeIndex(): generating index.');
+	}
 
 	if (!sdk.ss.courses)
 	{
@@ -173,9 +178,9 @@ function makeIndex () {
 
 	sdk.ss.coursesIndex = {};
 	sdk.ss.coursesTimeStamp = sdk.ss.courses[0][0];
-  if (debug) {
-	  console.log("sdk.ss.courses generated on: ", sdk.ss.coursesTimeStamp);
-  }
+	if (debug) {
+		console.log("sdk.ss.courses generated on: ", sdk.ss.coursesTimeStamp);
+	}
 
 	for (var i = 1; i < sdk.ss.courses.length; i++)
 	{
@@ -198,23 +203,23 @@ function makeIndex () {
 		}
 
 	}
-  if (debug) {
-	  console.log("makeIndex(): index created: ", sdk.ss.coursesIndex);
-	  console.timeEnd('makeIndex');
-  }
+	if (debug) {
+		console.log("makeIndex(): index created: ", sdk.ss.coursesIndex);
+		console.timeEnd('makeIndex');
+	}
 }
 
 function traverseIndex () {
-  if (debug) {
-	  console.time('traverseIndex');
-	  console.log('traverseIndex(): printing the index.');
-  }
+	if (debug) {
+		console.time('traverseIndex');
+		console.log('traverseIndex(): printing the index.');
+	}
 
 	if (!sdk.ss.courses)
 	{
-    if (debug) {
-		  console.log("traverseIndex(): sdk.ss.courses missing, aborting function");
-    }
+		if (debug) {
+			console.log("traverseIndex(): sdk.ss.courses missing, aborting function");
+		}
 		return;
 	}
 
@@ -222,40 +227,40 @@ function traverseIndex () {
 	{
 		for (var y = 1; y < sdk.ss.courses[x].length; y++)
 		{
-      if (debug) {
-			  console.log('course: ', sdk.ss.coursesIndex[x][y]);
-      }
+			if (debug) {
+				console.log('course: ', sdk.ss.coursesIndex[x][y]);
+			}
 		}
 	}
 
-  if (debug) {
-	  console.timeEnd('traverseIndex');
-  }
+	if (debug) {
+		console.timeEnd('traverseIndex');
+	}
 }
 
 mainPanel.port.on('testCall', function () {
-  if (debug) console.log("testCall called");
-  sso_getCredentials();
+	if (debug) console.log("testCall called");
+	sso_getCredentials();
 });
 
 mainPanel.port.on('sso_set', sso.SetPassword);
 
 /*
- * Execution
- */
+* Execution
+*/
 
 if (debug) {
-  tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
-  tabs.open("about:addons");
+	tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
+	tabs.open("about:addons");
 }
 
 if (sdk.ss.courses && sdk.ss.courseIndex)
 {
-sdk.pageMod.PageMod({
-	include: "*.uah.edu",
-	contentScriptWhen: "end",
-	contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("uah_page.js")]
-});
+	sdk.pageMod.PageMod({
+		include: "*.uah.edu",
+		contentScriptWhen: "end",
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("uah_page.js")]
+	});
 }
 
 if (ssoEnabled)
@@ -265,20 +270,22 @@ if (ssoEnabled)
 
 function setupSSOpagemod ()
 {
-ssoPageMod = sdk.pageMod.PageMod({
-  include: "https://sso.uah.edu/cas/*",
-  contentScriptWhen: "end",
-  contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_actual.js")],
-  onAttach: function (worker) {
+	function _onAttach (worker) {
 		sdk.passwords.search({
 			realm: "chevaline_sso",
-      username: ssoUser,
-			onComplete: function (credentials) {
-        if (credentials) {
-				  worker.port.emit("sendCredentials", credentials);
-        }
+			username: sso.GetUsername,
+			onComplete: function _onComplete (credentials) {
+				if (credentials) {
+					worker.port.emit("sendCredentials", credentials);
+				}
 			}
 		});
-  }
-});
+	}
+
+	ssoPageMod = sdk.pageMod.PageMod({
+		include: "https://sso.uah.edu/cas/*",
+		contentScriptWhen: "end",
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_actual.js")],
+		onAttach: _onAttach
+	});
 }
