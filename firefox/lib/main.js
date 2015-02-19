@@ -10,23 +10,25 @@
  * SDK tools
  */
 
-var tabs = require("sdk/tabs");
-var pageMod = require("sdk/page-mod");
-var self = require("sdk/self");
-var favicons = require("sdk/places/favicon");
-var timers = require("sdk/timers");
-var urlRequest = require("sdk/request");
-var simplePrefs = require('sdk/simple-prefs');
-var ss = require('sdk/simple-storage').storage;
+var sdk = new Object();
+sdk.tabs = require("sdk/tabs");
+sdk.pageMod = require("sdk/page-mod");
+sdk.selfMod = require("sdk/self");
+sdk.favicons = require("sdk/places/favicon");
+sdk.timers = require("sdk/timers");
+sdk.urlRequest = require("sdk/request");
+sdk.simplePrefs = require('sdk/simple-prefs');
+sdk.ss = require('sdk/simple-storage').storage;
 var { ToggleButton } = require('sdk/ui/button/toggle');
-var panel = require('sdk/panel');
-var passwords = require('sdk/passwords');
+sdk.panel = require('sdk/panel');
+sdk.passwords = require('sdk/passwords');
 
 /*
  * Low level or 3rd party tools
  */
 
 var menuitem = require("menuitems");
+var sso = require("./sso.js");
 const {XMLHttpRequest} = require("sdk/net/xhr");
 
 /*
@@ -34,15 +36,15 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
  */
 
 var debug = false;
-var year = simplePrefs.prefs['year'];
-var semester = simplePrefs.prefs['semester'];
-var ssoEnabled = simplePrefs.prefs['sso_enabled'];
-var ssoUser = simplePrefs.prefs['sso_user'];
+var year = sdk.simplePrefs.prefs['year'];
+var semester = sdk.simplePrefs.prefs['semester'];
+var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
+//var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 var ssoPageMod;
 
-var mainPanel = panel.Panel({
-	contentURL: self.data.url("buttonPanel.html"),
-	contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("buttonPanel.js")],
+var mainPanel = sdk.panel.Panel({
+	contentURL: sdk.selfMod.data.url("buttonPanel.html"),
+	contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("buttonPanel.js")],
 	onHide: panelHidden
 });
 
@@ -50,9 +52,9 @@ var mainButton = ToggleButton({
 	id: 'chevaline-button',
 	label: 'Chevaline Button',
 	icon: {
-		'16': self.data.url('chevalogo_16.png'),
-		'32': self.data.url('chevalogo_32.png'),
-		'64': self.data.url('chevalogo_64.png')
+		'16': sdk.selfMod.data.url('chevalogo_16.png'),
+		'32': sdk.selfMod.data.url('chevalogo_32.png'),
+		'64': sdk.selfMod.data.url('chevalogo_64.png')
 	},
 	onChange: buttonChanged
 });
@@ -61,27 +63,26 @@ function handle_simplePrefs (_pref)
 {
   if (_pref === "sso_enabled")
   {
-    ssoEnabled = simplePrefs.prefs['sso_enabled'];
+    ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
     if (ssoEnabled) {
       setupSSOpagemod();
     } else {
       ssoPageMod.destroy();
     }
   } else if (_pref === "sso_user") {
-    ssoUser = simplePrefs.prefs['sso_user'];
-    sso_setCredentials();
+    sso_setCredentials(sdk.simplePrefs.prefs['sso_user']);
   }
 }
 
-simplePrefs.on("sso_enabled", handle_simplePrefs);
-simplePrefs.on("sso_user", handle_simplePrefs);
+sdk.simplePrefs.on("sso_enabled", handle_simplePrefs);
+sdk.simplePrefs.on("sso_user", handle_simplePrefs);
 
 /*
  * Items in browser's alt menus
  */
 
 menuitem.Menuitem({
-	id: "panel button",
+	id: "sdk.panel button",
 	menuid: "menu_ToolsPopup",
 	label: "Show Chevaline Pane",
 	onCommand: showPanel(),
@@ -127,12 +128,12 @@ function buttonChanged (state) {
  * Setup
  */
 
-if (!ss.courses)
+if (!sdk.ss.courses)
 {
   if (debug) { console.log("Large course object not found, fetching new courses.json"); }
 	getCourses();
 } else if (debug) {
-	console.log('ss.courses found: ', ss.courses);
+	console.log('sdk.ss.courses found: ', sdk.ss.courses);
 }
 
 /*
@@ -144,12 +145,12 @@ function getCourses () {
 	console.time("getCourses");
 	console.log("getCourses(): sending berocs.com request.");
   }
-	urlRequest.Request({
+	sdk.urlRequest.Request({
 	url: "http://berocs.com/chevaline/courses.txt",
 	onComplete: function saveCoursesData (result) {
 		console.log("berocs.com result: ", result);
-		ss.courses=result.json;
-		if (debug) console.log("ss.courses: ", ss.courses);
+		sdk.ss.courses=result.json;
+		if (debug) console.log("sdk.ss.courses: ", sdk.ss.courses);
 		makeIndex();
     if (debug) {
 		  console.timeEnd("getCourses");
@@ -164,41 +165,41 @@ function makeIndex () {
 	  console.log('makeIndex(): generating index.');
   }
 
-	if (!ss.courses)
+	if (!sdk.ss.courses)
 	{
-		if (debug) console.log('ss.courses not found, aborting makeIndex().');
+		if (debug) console.log('sdk.ss.courses not found, aborting makeIndex().');
 		return;
 	}
 
-	ss.coursesIndex = {};
-	ss.coursesTimeStamp = ss.courses[0][0];
+	sdk.ss.coursesIndex = {};
+	sdk.ss.coursesTimeStamp = sdk.ss.courses[0][0];
   if (debug) {
-	  console.log("ss.courses generated on: ", ss.coursesTimeStamp);
+	  console.log("sdk.ss.courses generated on: ", sdk.ss.coursesTimeStamp);
   }
 
-	for (var i = 1; i < ss.courses.length; i++)
+	for (var i = 1; i < sdk.ss.courses.length; i++)
 	{
-		var subcollege = ss.courses[i][0];
+		var subcollege = sdk.ss.courses[i][0];
 		//console.log("subcollege: ", subcollege);
-		ss.coursesIndex[subcollege] = {};
+		sdk.ss.coursesIndex[subcollege] = {};
 
-		for (var x = 1; x < ss.courses[i].length; x++)
+		for (var x = 1; x < sdk.ss.courses[i].length; x++)
 		{
-			var course_crn = ss.courses[i][x][1];
-			var course_num = ss.courses[i][x][2];
-			var course_sec = ss.courses[i][x][3];
+			var course_crn = sdk.ss.courses[i][x][1];
+			var course_num = sdk.ss.courses[i][x][2];
+			var course_sec = sdk.ss.courses[i][x][3];
 
-			ss.coursesIndex[subcollege][course_crn] = x;
-			if (!ss.coursesIndex[subcollege][course_num])
+			sdk.ss.coursesIndex[subcollege][course_crn] = x;
+			if (!sdk.ss.coursesIndex[subcollege][course_num])
 			{
-				ss.coursesIndex[subcollege][course_num] = {};
+				sdk.ss.coursesIndex[subcollege][course_num] = {};
 			}
-			ss.coursesIndex[subcollege][course_num][course_sec] = x;
+			sdk.ss.coursesIndex[subcollege][course_num][course_sec] = x;
 		}
 
 	}
   if (debug) {
-	  console.log("makeIndex(): index created: ", ss.coursesIndex);
+	  console.log("makeIndex(): index created: ", sdk.ss.coursesIndex);
 	  console.timeEnd('makeIndex');
   }
 }
@@ -209,20 +210,20 @@ function traverseIndex () {
 	  console.log('traverseIndex(): printing the index.');
   }
 
-	if (!ss.courses)
+	if (!sdk.ss.courses)
 	{
     if (debug) {
-		  console.log("traverseIndex(): ss.courses missing, aborting function");
+		  console.log("traverseIndex(): sdk.ss.courses missing, aborting function");
     }
 		return;
 	}
 
-	for (var x = 1; x < ss.courses.length; x++)
+	for (var x = 1; x < sdk.ss.courses.length; x++)
 	{
-		for (var y = 1; y < ss.courses[x].length; y++)
+		for (var y = 1; y < sdk.ss.courses[x].length; y++)
 		{
       if (debug) {
-			  console.log('course: ', ss.coursesIndex[x][y]);
+			  console.log('course: ', sdk.ss.coursesIndex[x][y]);
       }
 		}
 	}
@@ -232,56 +233,12 @@ function traverseIndex () {
   }
 }
 
-function sso_setCredentials(_password)
-{
-  if (debug) console.log("sso_setCredentials: ", ssoUser, _password);
-    sso_clearCredentials(function (_cred) {
-      passwords.store({
-      realm: "chevaline_sso",
-      username: ssoUser,
-      password: _password,
-      onError: function (_err) {
-        if (debug) console.log("sso cred add error: ", _err.message);
-      }
-    });
-  });
-}
-
-function sso_clearCredentials(_callback)
-{
-  passwords.search({
-    realm: "chevaline_sso",
-    onComplete: function (_cred) {
-      _cred.forEach(passwords.remove);
-      if (debug) console.log("sso credentials: ", _cred);
-      _callback(_cred);
-    },
-    onError: function (_err) {
-      if (debug) console.log("sso cred add error: ", _err.message);
-    }
-  });
-}
-
-function sso_getCredentials()
-{
-  passwords.search({
-    realm: "chevaline_sso",
-    username: ssoUser,
-    onComplete: function (_cred) {
-        if (debug) console.log("sso credentials: ", _cred);
-    },
-    onError: function (_err) {
-      if (debug) console.log("sso cred add error: ", _err.message);
-    }
-  });
-}
-
 mainPanel.port.on('testCall', function () {
   if (debug) console.log("testCall called");
   sso_getCredentials();
 });
 
-mainPanel.port.on('sso_set', sso_setCredentials);
+mainPanel.port.on('sso_set', sso.SetPassword);
 
 /*
  * Execution
@@ -292,12 +249,12 @@ if (debug) {
   tabs.open("about:addons");
 }
 
-if (ss.courses && ss.courseIndex)
+if (sdk.ss.courses && sdk.ss.courseIndex)
 {
-pageMod.PageMod({
+sdk.pageMod.PageMod({
 	include: "*.uah.edu",
 	contentScriptWhen: "end",
-	contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("uah_page.js")]
+	contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("uah_page.js")]
 });
 }
 
@@ -308,12 +265,12 @@ if (ssoEnabled)
 
 function setupSSOpagemod ()
 {
-ssoPageMod = pageMod.PageMod({
+ssoPageMod = sdk.pageMod.PageMod({
   include: "https://sso.uah.edu/cas/*",
   contentScriptWhen: "end",
-  contentScriptFile: [self.data.url("jquery-2.1.3.min.js"), self.data.url("sso_actual.js")],
+  contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_actual.js")],
   onAttach: function (worker) {
-		passwords.search({
+		sdk.passwords.search({
 			realm: "chevaline_sso",
       username: ssoUser,
 			onComplete: function (credentials) {
@@ -325,12 +282,3 @@ ssoPageMod = pageMod.PageMod({
   }
 });
 }
-
-
-
-
-
-
-
-
-
