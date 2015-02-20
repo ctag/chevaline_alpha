@@ -5,9 +5,9 @@ var sdk = new Object();
 sdk.passwords = require('sdk/passwords');
 sdk.simplePrefs = require('sdk/simple-prefs');
 
-var ssoUser = simplePrefs.prefs['sso_user'];
+var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 
-var debug = simplePrefs.prefs['debug'];
+var debug = sdk.simplePrefs.prefs['debug'];
 
 function sso_setUsername(_user, _callback)
 {
