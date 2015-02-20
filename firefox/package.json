@@ -5,7 +5,7 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.19",
+  "version": "2015.2.20",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
@@ -30,6 +30,11 @@
     "title": "Account to use with Chevaline's SSO handler.",
 		"type": "string",
 		"value": "xxx0001"
+  },{
+		"name": "canvas_enabled",
+		"title": "Enable enhancements to your Canvas session?",
+		"type": "bool",
+		"value": true
   },{
 		"name": "debug",
 		"title": "Enable debugging?",

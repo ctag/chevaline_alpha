@@ -40,10 +40,12 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 * Global Vars
 */
 
-var debug = false;
+var debug = true;
 var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
 var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
+var canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
+var canvasBackground = sdk.selfMod.data.url('dialog_background.png');
 //var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 var ssoPageMod;
 
@@ -76,6 +78,13 @@ function handle_simplePrefs (_pref)
 		}
 	} else if (_pref === "sso_user") {
 		sso_setCredentials(sdk.simplePrefs.prefs['sso_user']);
+	} else if (_pref === 'canvas_enabled') {
+		canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
+		if (canvasEnabled) {
+			//
+		} else {
+			//
+		}
 	}
 }
 
@@ -250,8 +259,9 @@ mainPanel.port.on('sso_set', sso.SetPassword);
 */
 
 if (debug) {
-	tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
-	tabs.open("about:addons");
+	sdk.tabs.open("http://canvas.uah.edu");
+	//tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
+	//tabs.open("about:addons");
 }
 
 if (sdk.ss.courses && sdk.ss.courseIndex)
@@ -268,6 +278,24 @@ if (ssoEnabled)
 	setupSSOpagemod();
 }
 
+if (canvasEnabled)
+{
+	//
+}
+
+function setupCanvaspagemode ()
+{
+	function _onAttach (worker) {
+		//
+	}
+	canvasPageMod = sdk.pageMod.PageMod({
+		include: 'https://uah.instructure.com/*',
+		contentScriptWhen: 'end',
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("canvas_mod.js")],
+		onAttach: _onAttach
+	});
+}
+
 function setupSSOpagemod ()
 {
 	function _onAttach (worker) {
@@ -276,16 +304,17 @@ function setupSSOpagemod ()
 			username: sso.GetUsername,
 			onComplete: function _onComplete (credentials) {
 				if (credentials) {
-					worker.port.emit("sendCredentials", credentials);
+					//worker.port.emit("sendCredentials", credentials);
 				}
+				//worker.port.emit("sendBackground", canvasBackground);
 			}
 		});
 	}
-
 	ssoPageMod = sdk.pageMod.PageMod({
 		include: "https://sso.uah.edu/cas/*",
 		contentScriptWhen: "end",
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_actual.js")],
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_mod.js")],
+		contentScriptOptions: {'background_url' : canvasBackground},
 		onAttach: _onAttach
 	});
 }
