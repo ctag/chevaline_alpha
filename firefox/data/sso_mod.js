@@ -1,6 +1,6 @@
 // The *real* Single Sign On
 
-var debug = true;
+var debug = false;
 
 if (debug) {
   console.log("sso_mod.js running");
@@ -8,10 +8,10 @@ if (debug) {
 
 var html = new Object();
 var mod = new Object();
-mod.title = 'Chevaline SSO Aide';
+
 mod.sso_enabled = self.options.sso_enabled;
-console.log(mod.sso_enabled);
-console.log(self.options.sso_enabled);
+if (debug) console.log(mod.sso_enabled);
+if (debug) console.log(self.options.sso_enabled);
 
 html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
 html.uselessWarning.html("");
@@ -63,8 +63,16 @@ mod.dialog = ' \
 <hr> \
 <center> \
 Configuration options \
-<br> \
+<br><br> \
 <input type="checkbox" id="chevaline_sso_enable"><label id="chevaline_sso_enable_label" for="chevaline_sso_enable">Enable Automatic Login</label> \
+<br> \
+<div style="margin-top: 5px; margin-bottom: 5px;"> \
+Set SSO Password <input type="password" id="chevaline_sso_password" size="10"> \
+</div> \
+<br> \
+<div style="margin-top: 5px; margin-bottom: 5px;"> \
+<input type="button" id="chevaline_sso_submit" value="Save"> \
+</div> \
 </center></div>';
 
 //mod.theme_css = '<link href="https://code.jquery.com/ui/1.11.3/themes/dark-hive/jquery-ui.css" rel="stylesheet" type="text/css" />';
@@ -79,21 +87,28 @@ html.body.append(mod.css);
 
 mod.buttonEnable = $('#chevaline_sso_enable');
 mod.buttonEnable.button();
+mod.buttonSubmit = $('#chevaline_sso_submit');
+mod.buttonSubmit.button();
+
+mod.inputPassword = $('#chevaline_sso_password');
 
 if (self.options.sso_enabled) {
-  $('#chevaline_sso_enable').prop('checked', 'true').button('refresh');
+  mod.buttonEnable.prop('checked', 'true').button('refresh');
 } else {
-  $('#chevaline_sso_enable').prop('checked', 'false').button('refresh');
+  mod.buttonEnable.prop('checked', 'false').button('refresh');
 }
 
-$('#chevaline_sso_enable').click(function handleClick () {
-  var _enabled = $('#chevaline_sso_enable').prop('checked');
-  console.log("clicked: ", _enabled);
+mod.buttonEnable.click(function handleClick () {
+  var _enabled = mod.buttonEnable.prop('checked');
+  if (debug) console.log("clicked: ", _enabled);
   self.port.emit('ssoEnabled', _enabled);
   mod.sso_enabled = _enabled;
 });
 
-if (mod.sso_enabled) {
+mod.buttonSubmit.click(function handleClick () {
+  self.port.emit('ssoPassword', mod.inputPassword.val());
+});
+
 self.port.on("sendCredentials", function(credentials) {
   if (debug) {
     console.log("receiving credentials!");
@@ -102,14 +117,15 @@ self.port.on("sendCredentials", function(credentials) {
   var username = credentials[0].username;
   var password = credentials[0].password;
   if (debug) console.log("credentials: " + username + ", " + password);
-  login(username, password);
+  if (mod.sso_enabled) {
+    login(username, password);
+  }
 });
-}
 
 function login (username, password) {
   $('#username').css("disabled", "true");
   $('#password').css("disabled", "true");
   $('#username').val(username);
   $('#password').val(password);
-  //$('.btn-submit').click();
+  $('.btn-submit').click();
 }

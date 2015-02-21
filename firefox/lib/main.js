@@ -40,7 +40,7 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 * Global Vars
 */
 
-var debug = true;
+var debug = false;
 var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
 var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
@@ -295,21 +295,32 @@ function setupCanvaspagemode ()
 function setupSSOpagemod ()
 {
 	function _onAttach (worker) {
-		sdk.passwords.search({
+		if (debug) console.log("searching credentials for ", sso.GetUsername());
+		function _sendCredentials (_cred) {
+			if (debug) console.log("sending: ", _cred);
+			worker.port.emit('sendCredentials', _cred);
+		}
+		sso.GetCredentials(_sendCredentials);
+		/*sdk.passwords.search({
 			realm: "chevaline_sso",
 			username: sso.GetUsername,
 			onComplete: function _onComplete (credentials) {
+				console.log("evaluating credentials to send: ", credentials);
 				if (typeof credentials[0] != "undefined") {
 					worker.port.emit("sendCredentials", credentials);
 				}
 			}
-		});
+		});*/
 		worker.port.on('ssoEnabled', function (_enabled) {
 			if (_enabled == true) {
 				sdk.simplePrefs.prefs.sso_enabled = true;
 			} else {
 				sdk.simplePrefs.prefs.sso_enabled = false;
 			}
+		});
+		worker.port.on('ssoPassword', function (_password) {
+			if (debug) {console.log("setting password: ", _password)}
+			sso.SetPassword(_password);
 		});
 	}
 	ssoPageMod = sdk.pageMod.PageMod({
@@ -318,7 +329,7 @@ function setupSSOpagemod ()
 		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
 		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING can override it */
 		contentScriptOptions: {
-			'background_url' : sdk.selfMod.data.url('dialog_background.png'),
+			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
 			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
 			'sso_enabled': ssoEnabled
