@@ -5,7 +5,7 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.20",
+  "version": "2015.2.21",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
@@ -22,12 +22,12 @@
 		"value": "sprg"
   },{
 		"name": "sso_enabled",
-		"title": "Enable the 'Real SSO' feature? This will allow you to specify SSO credentials from the tools alt menu and then actually use Canvas!",
+		"title": "Enable Automatic Login for UAH CAS?",
 		"type": "bool",
 		"value": true
   },{
 		"name": "sso_user",
-    "title": "Account to use with Chevaline's SSO handler.",
+    "title": "UAH CAS account to use with Automatic Login.",
 		"type": "string",
 		"value": "xxx0001"
   },{

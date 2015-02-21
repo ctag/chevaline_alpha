@@ -260,7 +260,7 @@ mainPanel.port.on('sso_set', sso.SetPassword);
 if (debug) {
 	sdk.tabs.open("http://canvas.uah.edu");
 	//tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
-	//tabs.open("about:addons");
+	sdk.tabs.open("about:addons");
 }
 
 if (sdk.ss.courses && sdk.ss.courseIndex)
@@ -272,10 +272,7 @@ if (sdk.ss.courses && sdk.ss.courseIndex)
 	});
 }
 
-if (ssoEnabled)
-{
-	setupSSOpagemod();
-}
+setupSSOpagemod();
 
 if (canvasEnabled)
 {
@@ -302,10 +299,16 @@ function setupSSOpagemod ()
 			realm: "chevaline_sso",
 			username: sso.GetUsername,
 			onComplete: function _onComplete (credentials) {
-				if (credentials) {
-					//worker.port.emit("sendCredentials", credentials);
+				if (typeof credentials[0] != "undefined") {
+					worker.port.emit("sendCredentials", credentials);
 				}
-				//worker.port.emit("sendBackground", canvasBackground);
+			}
+		});
+		worker.port.on('ssoEnabled', function (_enabled) {
+			if (_enabled == true) {
+				sdk.simplePrefs.prefs.sso_enabled = true;
+			} else {
+				sdk.simplePrefs.prefs.sso_enabled = false;
 			}
 		});
 	}
@@ -317,7 +320,8 @@ function setupSSOpagemod ()
 		contentScriptOptions: {
 			'background_url' : sdk.selfMod.data.url('dialog_background.png'),
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
+			'sso_enabled': ssoEnabled
 			},
 		onAttach: _onAttach
 	});
