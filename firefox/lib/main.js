@@ -45,7 +45,6 @@ var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
 var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
 var canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
-var canvasBackground = sdk.selfMod.data.url('dialog_background.png');
 //var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 var ssoPageMod;
 
@@ -313,8 +312,13 @@ function setupSSOpagemod ()
 	ssoPageMod = sdk.pageMod.PageMod({
 		include: "https://sso.uah.edu/cas/*",
 		contentScriptWhen: "end",
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("sso_mod.js")],
-		contentScriptOptions: {'background_url' : canvasBackground},
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
+		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING can override it */
+		contentScriptOptions: {
+			'background_url' : sdk.selfMod.data.url('dialog_background.png'),
+			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+			},
 		onAttach: _onAttach
 	});
 }
