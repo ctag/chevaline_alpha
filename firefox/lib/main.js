@@ -24,7 +24,6 @@ sdk.timers = require("sdk/timers");
 sdk.urlRequest = require("sdk/request");
 sdk.simplePrefs = require('sdk/simple-prefs');
 sdk.ss = require('sdk/simple-storage').storage;
-var { ToggleButton } = require('sdk/ui/button/toggle');
 sdk.panel = require('sdk/panel');
 sdk.passwords = require('sdk/passwords');
 
@@ -47,23 +46,6 @@ var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
 var canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
 //var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 var ssoPageMod;
-
-var mainPanel = sdk.panel.Panel({
-	contentURL: sdk.selfMod.data.url("buttonPanel.html"),
-	contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("buttonPanel.js")],
-	onHide: panelHidden
-});
-
-var mainButton = ToggleButton({
-	id: 'chevaline-button',
-	label: 'Chevaline Button',
-	icon: {
-		'16': sdk.selfMod.data.url('chevalogo_16.png'),
-		'32': sdk.selfMod.data.url('chevalogo_32.png'),
-		'64': sdk.selfMod.data.url('chevalogo_64.png')
-	},
-	onChange: buttonChanged
-});
 
 function handle_simplePrefs (_pref)
 {
@@ -98,44 +80,9 @@ menuitem.Menuitem({
 	id: "sdk.panel button",
 	menuid: "menu_ToolsPopup",
 	label: "Show Chevaline Pane",
-	onCommand: showPanel(),
+	//onCommand: showPanel(),
 	insertbefore: "menu_pageInfo"
 });
-if (ssoEnabled == true)
-{
-	menuitem.Menuitem({
-		id: "sso_credentials",
-		menuid: "menu_ToolsPopup",
-		label: "Set UAH SSO Credentials",
-		onCommand: showPanel(),
-		insertbefore: "menu_pageInfo"
-	});
-}
-
-/*
-* Drop down pane attached to addon's button
-*/
-
-function showPanel () {
-	mainPanel.show({
-		position: mainButton
-	});
-}
-
-function panelHidden () {
-	mainButton.state('window', {checked: false});
-}
-
-/*
-* Toggle button on browser bar
-*/
-
-function buttonChanged (state) {
-	if (state.checked)
-	{
-		showPanel();
-	}
-}
 
 /*
 * Setup
@@ -245,14 +192,6 @@ function traverseIndex () {
 		console.timeEnd('traverseIndex');
 	}
 }
-
-mainPanel.port.on('testCall', function () {
-	if (debug) console.log("testCall called");
-	sso_getCredentials();
-});
-
-mainPanel.port.on('sso_set', sso.SetPassword);
-
 /*
 * Execution
 */
