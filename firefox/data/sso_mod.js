@@ -127,5 +127,5 @@ function login (username, password) {
   $('#password').css("disabled", "true");
   $('#username').val(username);
   $('#password').val(password);
-  $('.btn-submit').click();
+  //$('.btn-submit').click();
 }
