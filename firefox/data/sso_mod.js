@@ -32,7 +32,7 @@ if (self.options.sso_enabled && (!$('.errors')[0])) {
 }
 
 if (ssoEnabled) {
-  var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
+  //var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
 }
 
 html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
@@ -114,22 +114,18 @@ mod.buttonEnable.click(function handleClick () {
   var _enabled = mod.buttonEnable.prop('checked');
   if (debug) console.log("clicked: ", _enabled);
   self.port.emit('return_ssoEnabled', _enabled);
-  sso_enabled = _enabled;
-});
-
-mod.buttonSubmit.click(function handleClick () {
-  if (mod.inputUsername.val() && mod.inputPassword.val()) {
-    self.port.emit('return_ssoCredentials', mod.inputUsername.val(), mod.inputPassword.val());
-  }
+  ssoEnabled = _enabled;
+  set_buttonEnable();
 });
 
 function set_buttonEnable ()
 {
   if (self.options.sso_enabled) {
-    mod.buttonEnable.prop('checked', 'true').button('refresh');
+    mod.buttonEnable.prop('checked', 'true').button('option', 'label', 'Automatic Login Enabled');
   } else {
-    mod.buttonEnable.prop('checked', 'false').button('refresh');
+    mod.buttonEnable.prop('checked', 'false').button('option', 'label', 'Automatic Login Disabled');
   }
+  mod.buttonEnable.button("refresh");
 }
 
 function login (username, password) {
