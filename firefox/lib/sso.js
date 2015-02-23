@@ -5,9 +5,28 @@ var sdk = new Object();
 sdk.passwords = require('sdk/passwords');
 sdk.simplePrefs = require('sdk/simple-prefs');
 
-var ssoUser = sdk.simplePrefs.prefs['sso_user'];
+var sso_url = sdk.simplePrefs.prefs['sso_url'];
 
 var debug = false; //sdk.simplePrefs.prefs['debug'];
+
+function sso_setCredentials(_username, _password)
+{
+  function _error (_err) {
+    sso_handleError('sso_clearCredentials', _err);
+  }
+
+  function _onComplete (_cred) {
+    _cred.forEach(sdk.passwords.remove);
+    if (debug) console.log("sso credentials: ", _cred);
+    _callback(_cred);
+  }
+
+  sdk.passwords.search({
+    realm: "chevaline_sso",
+    onComplete: _onComplete,
+    onError: _error
+  });
+}
 
 function sso_setUsername(_user, _callback)
 {
@@ -17,7 +36,11 @@ function sso_setUsername(_user, _callback)
 
 function sso_getUsername()
 {
-  return ssoUser;
+  function _returnUsername(_cred)
+  {
+    // hrm :|
+  }
+  sso_getCredentials(_returnUsername);
 }
 
 function sso_setPassword(_password, _callback = null)
@@ -69,8 +92,7 @@ function sso_getCredentials(_callback)
   }
 
   sdk.passwords.search({
-    realm: "chevaline_sso",
-    username: ssoUser,
+    url: sso_url,
     onComplete: _onComplete,
     onError: _error
   });

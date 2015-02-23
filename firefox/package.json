@@ -5,7 +5,7 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.21",
+  "version": "2015.2.23",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
@@ -22,19 +22,19 @@
 		"value": "sprg"
   },{
 		"name": "sso_enabled",
-		"title": "Enable Automatic Login for UAH CAS?",
+		"title": "Enable Automatic Login for UAH CAS? Only works if you've stored your CAS credentials in the firefox password manager.",
 		"type": "bool",
-		"value": true
+		"value": false
   },{
-		"name": "sso_user",
-    "title": "UAH CAS account to use with Automatic Login.",
+		"name": "sso_url",
+		"title": "URL to use for Automatic Login.\nYou should not need to change this.",
 		"type": "string",
-		"value": "xxx0001"
+		"value": "https://sso.uah.edu"
   },{
 		"name": "canvas_enabled",
 		"title": "Enable enhancements to your Canvas session?",
 		"type": "bool",
-		"value": true
+		"value": false
   },{
 		"name": "debug",
 		"title": "Enable debugging?",
