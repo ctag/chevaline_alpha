@@ -234,31 +234,11 @@ function setupCanvaspagemod ()
 
 function setupSSOpagemod ()
 {
-	function _getUsername (_cred) {
-		return(_cred[0].username);
-	}
-
 	function _onAttach (worker) {
-		/*
-		if (debug) console.log("searching credentials for ", sso.GetUsername());
-		function _sendCredentials (_cred) {
-			if (debug) console.log("sending: ", _cred);
-			worker.port.emit('sendCredentials', _cred);
-		}
-		sso.GetCredentials(_sendCredentials);
-		*/
-
 		worker.port.on('return_ssoEnabled', function (_enabled) {
-			if (_enabled == true) {
-				sdk.simplePrefs.prefs.sso_enabled = true;
-			} else {
-				sdk.simplePrefs.prefs.sso_enabled = false;
-			}
+			sdk.simplePrefs.prefs.sso_enabled = _enabled;
 		});
-		worker.port.on('return_ssoCredentials', function (_username, _password) {
-			if (debug) {console.log("setting password: ", _username, _password)}
-			sso.SetPassword(_password);
-		});
+
 		worker.port.on('request_ssoCredential', function () {
 			function _sendUsername (_cred) {
 				console.log("credentials: ", _cred);
@@ -269,7 +249,7 @@ function setupSSOpagemod ()
 	}
 	ssoPageMod = sdk.pageMod.PageMod({
 		include: ["https://sso.uah.edu/cas/*", 'https://dev.uah.edu/cas/login'],
-		contentScriptWhen: "end",
+		contentScriptWhen: "ready",
 		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
 		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING overrides it */
 		contentScriptOptions: {

@@ -1,18 +1,13 @@
 // The *real* Single Sign On
 
-var debug = false;
+var debug = false; //self.options.debug;
 
-if (debug) {
-  console.log("sso_mod.js running");
-}
-
-var html = new Object();
-var mod = new Object();
+var html = new Object(); // Associate elements already on page
+var mod = new Object(); // Associate elements created by this js
 
 var ssoEnabled = self.options.sso_enabled;
 var ssoTimeout = self.options.sso_timeout;
 var ssoTimeoutPeriod = 200;
-var ssoUsername = "";
 
 self.port.on('send_ssoCredential', function (_credential) {
   //ssoUsername = _credential.username;
@@ -21,6 +16,10 @@ self.port.on('send_ssoCredential', function (_credential) {
     html.inputUsername.val(_credential.username);
   } else {
     html.inputUsername.val('No Username Found :|');
+    html.inputUsername.click(function () {
+      $(this).val('');
+    });
+    return; // Don't even try filling the password.
   }
   if (_credential.password) {
     html.inputPassword.val(_credential.password);
@@ -28,17 +27,13 @@ self.port.on('send_ssoCredential', function (_credential) {
 })
 
 if (self.options.sso_enabled && (!$('.errors')[0])) {
-  console.log("requesting credential from main.js");
+  if (debug) console.log("requesting credential from main.js");
   self.port.emit('request_ssoCredential');
 }
-
-if (debug) console.log(ssoEnabled);
-if (debug) console.log(self.options.sso_enabled);
 
 if (ssoEnabled) {
   var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
 }
-
 
 html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
 html.uselessWarning.html("");
@@ -98,14 +93,6 @@ Configuration options \
 <br><br> \
 <input type="checkbox" id="chevaline_autologin_enable"><label id="chevaline_autologin_enable_label" for="chevaline_autologin_enable">Enable Automatic Login</label> \
 <br> \
-<div style="margin-top: 5px; margin-bottom: 5px;"> \
-Set SSO Credentials \
-<br> \
-Username <input type="text" id="chevaline_sso_username" size="10"> \
-Password <input type="password" id="chevaline_sso_password" size="10"> \
-</div> \
-<br> \
-<input type="button" id="chevaline_sso_submit" value="Save"> \
 <div id="chevaline_timer"> \
 </div> \
 </center></div>';
@@ -120,17 +107,8 @@ $('head').append(mod.ui_css);
 html.login.append(mod.dialog);
 html.body.append(mod.css);
 
-if (ssoUsername) {
-  html.inputUsername.val(ssoUsername);
-}
-
 mod.buttonEnable = $('#chevaline_autologin_enable');
 mod.buttonEnable.button();
-mod.buttonSubmit = $('#chevaline_sso_submit');
-mod.buttonSubmit.button();
-
-mod.inputPassword = $('#chevaline_sso_password');
-mod.inputUsername = $('#chevaline_sso_username');
 
 mod.buttonEnable.click(function handleClick () {
   var _enabled = mod.buttonEnable.prop('checked');
