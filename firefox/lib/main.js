@@ -6,11 +6,6 @@
 * I hope you find it utilitous!
 */
 
-/* TODO
- * Fix Atom's comment formatting
- * Interact with SSO page
- */
-
 /*
 * SDK tools
 */
@@ -39,7 +34,7 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 * Global Vars
 */
 
-var debug = false;
+var debug = true;
 var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
 var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
@@ -212,13 +207,14 @@ if (sdk.ss.courses && sdk.ss.courseIndex)
 }
 
 setupSSOpagemod();
+setupCanvaspagemod();
 
 if (canvasEnabled)
 {
 	//
 }
 
-function setupCanvaspagemode ()
+function setupCanvaspagemod ()
 {
 	function _onAttach (worker) {
 		//
@@ -226,52 +222,62 @@ function setupCanvaspagemode ()
 	canvasPageMod = sdk.pageMod.PageMod({
 		include: 'https://uah.instructure.com/*',
 		contentScriptWhen: 'end',
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url("canvas_mod.js")],
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js")],
+		contentScriptOptions: {
+			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
+			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+		},
 		onAttach: _onAttach
 	});
 }
 
 function setupSSOpagemod ()
 {
+	function _getUsername (_cred) {
+		return(_cred[0].username);
+	}
+
 	function _onAttach (worker) {
+		/*
 		if (debug) console.log("searching credentials for ", sso.GetUsername());
 		function _sendCredentials (_cred) {
 			if (debug) console.log("sending: ", _cred);
 			worker.port.emit('sendCredentials', _cred);
 		}
 		sso.GetCredentials(_sendCredentials);
-		/*sdk.passwords.search({
-			realm: "chevaline_sso",
-			username: sso.GetUsername,
-			onComplete: function _onComplete (credentials) {
-				console.log("evaluating credentials to send: ", credentials);
-				if (typeof credentials[0] != "undefined") {
-					worker.port.emit("sendCredentials", credentials);
-				}
-			}
-		});*/
-		worker.port.on('ssoEnabled', function (_enabled) {
+		*/
+
+		worker.port.on('return_ssoEnabled', function (_enabled) {
 			if (_enabled == true) {
 				sdk.simplePrefs.prefs.sso_enabled = true;
 			} else {
 				sdk.simplePrefs.prefs.sso_enabled = false;
 			}
 		});
-		worker.port.on('ssoPassword', function (_password) {
-			if (debug) {console.log("setting password: ", _password)}
+		worker.port.on('return_ssoCredentials', function (_username, _password) {
+			if (debug) {console.log("setting password: ", _username, _password)}
 			sso.SetPassword(_password);
+		});
+		worker.port.on('request_ssoCredential', function () {
+			function _sendUsername (_cred) {
+				console.log("credentials: ", _cred);
+				worker.port.emit('send_ssoCredential', _cred[0]);
+			}
+			sso.GetCredentials(_sendUsername);
 		});
 	}
 	ssoPageMod = sdk.pageMod.PageMod({
-		include: "https://sso.uah.edu/cas/*",
+		include: ["https://sso.uah.edu/cas/*", 'https://dev.uah.edu/cas/login'],
 		contentScriptWhen: "end",
 		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
-		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING can override it */
+		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING overrides it */
 		contentScriptOptions: {
 			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
 			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-			'sso_enabled': ssoEnabled
+			'sso_enabled': ssoEnabled,
+			'sso_timeout': 1500
 			},
 		onAttach: _onAttach
 	});

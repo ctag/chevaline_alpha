@@ -9,9 +9,36 @@ if (debug) {
 var html = new Object();
 var mod = new Object();
 
-mod.sso_enabled = self.options.sso_enabled;
-if (debug) console.log(mod.sso_enabled);
+var ssoEnabled = self.options.sso_enabled;
+var ssoTimeout = self.options.sso_timeout;
+var ssoTimeoutPeriod = 200;
+var ssoUsername = "";
+
+self.port.on('send_ssoCredential', function (_credential) {
+  //ssoUsername = _credential.username;
+  console.log("username: ", _credential.username);
+  if (_credential.username) {
+    html.inputUsername.val(_credential.username);
+  } else {
+    html.inputUsername.val('No Username Found :|');
+  }
+  if (_credential.password) {
+    html.inputPassword.val(_credential.password);
+  }
+})
+
+if (self.options.sso_enabled && (!$('.errors')[0])) {
+  console.log("requesting credential from main.js");
+  self.port.emit('request_ssoCredential');
+}
+
+if (debug) console.log(ssoEnabled);
 if (debug) console.log(self.options.sso_enabled);
+
+if (ssoEnabled) {
+  var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
+}
+
 
 html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
 html.uselessWarning.html("");
@@ -30,6 +57,11 @@ html.login = $('#login');
 html.loginPos = html.login.offset();
 html.loginWidth = html.login.width();
 html.loginHeight = html.login.height();
+html.inputUsername = $('#username');
+html.inputPassword = $('#password');
+
+html.inputUsername.attr('autocomplete', 'on');
+html.inputPassword.attr('autocomplete', 'on');
 
 mod.padding = 15;
 mod.pos = new Object();
@@ -64,14 +96,17 @@ mod.dialog = ' \
 <center> \
 Configuration options \
 <br><br> \
-<input type="checkbox" id="chevaline_sso_enable"><label id="chevaline_sso_enable_label" for="chevaline_sso_enable">Enable Automatic Login</label> \
+<input type="checkbox" id="chevaline_autologin_enable"><label id="chevaline_autologin_enable_label" for="chevaline_autologin_enable">Enable Automatic Login</label> \
 <br> \
 <div style="margin-top: 5px; margin-bottom: 5px;"> \
-Set SSO Password <input type="password" id="chevaline_sso_password" size="10"> \
+Set SSO Credentials \
+<br> \
+Username <input type="text" id="chevaline_sso_username" size="10"> \
+Password <input type="password" id="chevaline_sso_password" size="10"> \
 </div> \
 <br> \
-<div style="margin-top: 5px; margin-bottom: 5px;"> \
 <input type="button" id="chevaline_sso_submit" value="Save"> \
+<div id="chevaline_timer"> \
 </div> \
 </center></div>';
 
@@ -85,47 +120,58 @@ $('head').append(mod.ui_css);
 html.login.append(mod.dialog);
 html.body.append(mod.css);
 
-mod.buttonEnable = $('#chevaline_sso_enable');
+if (ssoUsername) {
+  html.inputUsername.val(ssoUsername);
+}
+
+mod.buttonEnable = $('#chevaline_autologin_enable');
 mod.buttonEnable.button();
 mod.buttonSubmit = $('#chevaline_sso_submit');
 mod.buttonSubmit.button();
 
 mod.inputPassword = $('#chevaline_sso_password');
-
-if (self.options.sso_enabled) {
-  mod.buttonEnable.prop('checked', 'true').button('refresh');
-} else {
-  mod.buttonEnable.prop('checked', 'false').button('refresh');
-}
+mod.inputUsername = $('#chevaline_sso_username');
 
 mod.buttonEnable.click(function handleClick () {
   var _enabled = mod.buttonEnable.prop('checked');
   if (debug) console.log("clicked: ", _enabled);
-  self.port.emit('ssoEnabled', _enabled);
-  mod.sso_enabled = _enabled;
+  self.port.emit('return_ssoEnabled', _enabled);
+  sso_enabled = _enabled;
 });
 
 mod.buttonSubmit.click(function handleClick () {
-  self.port.emit('ssoPassword', mod.inputPassword.val());
+  if (mod.inputUsername.val() && mod.inputPassword.val()) {
+    self.port.emit('return_ssoCredentials', mod.inputUsername.val(), mod.inputPassword.val());
+  }
 });
 
-self.port.on("sendCredentials", function(credentials) {
-  if (debug) {
-    console.log("receiving credentials!");
-    console.log("sso_actual, ", credentials[0]);
+function set_buttonEnable ()
+{
+  if (self.options.sso_enabled) {
+    mod.buttonEnable.prop('checked', 'true').button('refresh');
+  } else {
+    mod.buttonEnable.prop('checked', 'false').button('refresh');
   }
-  var username = credentials[0].username;
-  var password = credentials[0].password;
-  if (debug) console.log("credentials: " + username + ", " + password);
-  if (mod.sso_enabled) {
-    login(username, password);
-  }
-});
+}
 
 function login (username, password) {
-  $('#username').css("disabled", "true");
-  $('#password').css("disabled", "true");
-  $('#username').val(username);
-  $('#password').val(password);
-  //$('.btn-submit').click();
+  if (html.inputUsername.val() && html.inputPassword.val()) {
+    $('.btn-submit').click();
+  }
 }
+
+function countdown (_period) {
+  var _time = $('#chevaline_timer');
+    console.log(_time.html());
+    ssoTimeout = ssoTimeout - ssoTimeoutPeriod;
+    if (ssoTimeout < 0) {
+      _time.html("0ms");
+      window.clearInterval(ssoTimer);
+      login();
+    } else {
+      _time.html(ssoTimeout + "ms");
+    }
+}
+
+// On run:
+set_buttonEnable();
