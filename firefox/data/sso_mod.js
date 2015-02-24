@@ -1,6 +1,6 @@
 // The *real* Single Sign On
 
-var debug = true; //self.options.debug;
+var debug = self.options.debug;
 
 if (debug) console.log("sso_mod.js loaded.");
 
@@ -95,6 +95,8 @@ Configuration options \
 <br><br> \
 <input type="checkbox" id="chevaline_autologin_enable"><label id="chevaline_autologin_enable_label" for="chevaline_autologin_enable">Enable Automatic Login</label> \
 <br> \
+<br> \
+<a href="https://github.com/ctag/chevaline_alpha" target="_blank" id="chevaline_button_docs">omg, wat do?</a> \
 <div id="chevaline_timer"> \
 </div> \
 </center></div>';
@@ -110,7 +112,10 @@ html.login.append(mod.dialog);
 html.body.append(mod.css);
 
 mod.buttonEnable = $('#chevaline_autologin_enable');
-mod.buttonEnable.button();
+//mod.buttonEnable.button();
+
+mod.buttonDocs = $('#chevaline_button_docs');
+mod.buttonDocs.button();
 
 mod.buttonEnable.click(function handleClick () {
   ssoEnabled = mod.buttonEnable.prop('checked');
@@ -121,6 +126,7 @@ mod.buttonEnable.click(function handleClick () {
 
 function set_buttonEnable ()
 {
+  mod.buttonEnable.button();
   var _text = "Automatic Login ";
   if (ssoEnabled) {
     _text += "Enabled";
@@ -140,7 +146,7 @@ function login (username, password) {
 
 function countdown (_period) {
   var _time = $('#chevaline_timer');
-    console.log(_time.html());
+    if (debug) console.log(_time.html());
     ssoTimeout = ssoTimeout - ssoTimeoutPeriod;
     if (ssoTimeout < 0) {
       _time.html("0ms");

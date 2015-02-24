@@ -34,7 +34,7 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 * Global Vars
 */
 
-var debug = true;
+var debug = sdk.simplePrefs.prefs['debug'];
 var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
 var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
@@ -44,23 +44,21 @@ var ssoPageMod;
 
 function handle_simplePrefs (_pref)
 {
-	if (_pref === "sso_enabled")
-	{
+	if (_pref === "sso_enabled") {
 		ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
 		if (ssoEnabled) {
 			setupSSOpagemod();
 		} else {
 			ssoPageMod.destroy();
 		}
-	} else if (_pref === "sso_user") {
-		sso_setCredentials(sdk.simplePrefs.prefs['sso_user']);
-	} else if (_pref === 'canvas_enabled') {
+	}
+
+	else if (_pref === 'canvas_enabled') {
 		canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
-		if (canvasEnabled) {
-			//
-		} else {
-			//
-		}
+	}
+
+	else if (_pref === 'debug') {
+		debug = sdk.simplePrefs.prefs['debug'];
 	}
 }
 
@@ -192,9 +190,9 @@ function traverseIndex () {
 */
 
 if (debug) {
-	sdk.tabs.open("http://canvas.uah.edu");
-	//tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
 	sdk.tabs.open("about:addons");
+	sdk.tabs.open("http://canvas.uah.edu");
+	//sdk.tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
 }
 
 if (sdk.ss.courses && sdk.ss.courseIndex)
@@ -208,11 +206,6 @@ if (sdk.ss.courses && sdk.ss.courseIndex)
 
 setupSSOpagemod();
 setupCanvaspagemod();
-
-if (canvasEnabled)
-{
-	//
-}
 
 function setupCanvaspagemod ()
 {
@@ -240,11 +233,11 @@ function setupSSOpagemod ()
 		});
 
 		worker.port.on('request_ssoCredential', function () {
-			function _sendUsername (_cred) {
+			function _sendCredential (_cred) {
 				console.log("credentials: ", _cred);
 				worker.port.emit('send_ssoCredential', _cred[0]);
 			}
-			sso.GetCredentials(_sendUsername);
+			sso.GetCredentials(_sendCredential);
 		});
 	}
 	ssoPageMod = sdk.pageMod.PageMod({
@@ -257,7 +250,8 @@ function setupSSOpagemod ()
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
 			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
 			'sso_enabled': ssoEnabled,
-			'sso_timeout': 1500
+			'sso_timeout': 1000,
+			'debug': sdk.simplePrefs.prefs['debug']
 			},
 		onAttach: _onAttach
 	});
