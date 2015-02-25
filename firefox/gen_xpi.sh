@@ -7,4 +7,4 @@
 # the .rdf should become the new update.rdf
 
 cfx xpi --update-url https://github.com/ctag/chevaline_alpha/raw/master/update.rdf \
---update-link https://github.com/ctag/chevaline_alpha/releases/download/2015.2.24/chevaline_alpha.xpi
+--update-link https://github.com/ctag/chevaline_alpha/releases/download/2015.2.25.2/chevaline_alpha.xpi
