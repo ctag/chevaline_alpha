@@ -5,19 +5,19 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.23",
+  "version": "2015.2.24",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
   },
   "preferences": [{
 		"name": "year",
-		"title": "Year to pull courses for.",
+		"title": "Year to pull courses for. Not Implemented.",
 		"type": "integer",
 		"value": 2015
   },{
 		"name": "semester",
-		"title": "Semester to pull courses for.",
+		"title": "Semester to pull courses for. Not Implemented.",
 		"type": "string",
 		"value": "sprg"
   },{

@@ -70,11 +70,13 @@ sdk.simplePrefs.on("sso_user", handle_simplePrefs);
 */
 
 menuitem.Menuitem({
-	id: "sdk.panel button",
+	id: "chevaline_button_test",
 	menuid: "menu_ToolsPopup",
-	label: "Show Chevaline Pane",
+	label: "Chevaline Alpha",
+	disabled: true,
 	//onCommand: showPanel(),
-	insertbefore: "menu_pageInfo"
+	insertbefore: "menu_pageInfo",
+	image: sdk.selfMod.data.url('chevalogo_16.png')
 });
 
 /*
@@ -234,7 +236,7 @@ function setupSSOpagemod ()
 
 		worker.port.on('request_ssoCredential', function () {
 			function _sendCredential (_cred) {
-				console.log("credentials: ", _cred);
+				if (debug) console.log("credentials: ", _cred);
 				worker.port.emit('send_ssoCredential', _cred[0]);
 			}
 			sso.GetCredentials(_sendCredential);
