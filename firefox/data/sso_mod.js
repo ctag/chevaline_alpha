@@ -4,14 +4,31 @@ var debug = self.options.debug;
 
 if (debug) console.log("sso_mod.js loaded.");
 
-$(document).ready(function () {
-
 var html = new Object(); // Associate elements already on page
 var mod = new Object(); // Associate elements created by this js
 
 var ssoEnabled = self.options.sso_enabled;
 var ssoTimeout = self.options.sso_timeout;
 var ssoTimeoutPeriod = 200;
+
+function set_buttonEnable ()
+{
+  //mod.buttonEnable.button();
+  var _text = "Automatic Login ";
+  if (ssoEnabled) {
+    _text += "Enabled";
+  } else {
+    _text += "Disabled";
+  }
+  mod.buttonEnable.prop('checked', ssoEnabled);
+  mod.buttonEnable.button('option', 'label', _text);
+  mod.buttonEnable.button("refresh");
+}
+
+self.port.on('send_ssoEnabled', function (_enabled) {
+  ssoEnabled = _enabled;
+  set_buttonEnable();
+});
 
 self.port.on('send_ssoCredential', function (_credential) {
   //ssoUsername = _credential.username;
@@ -34,6 +51,8 @@ if (ssoEnabled && (!$('.errors')[0])) {
   if (debug) console.log("requesting credential from main.js");
   self.port.emit('request_ssoCredential');
 }
+
+$(document).ready(function () {
 
 if (ssoEnabled && !debug) {
   var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
@@ -114,31 +133,22 @@ html.login.append(mod.dialog);
 html.body.append(mod.css);
 
 mod.buttonEnable = $('#chevaline_autologin_enable');
-//mod.buttonEnable.button();
+mod.buttonEnable.ready(function () {
+  mod.buttonEnable.button();
 
-mod.buttonDocs = $('#chevaline_button_docs');
-mod.buttonDocs.button();
-
-mod.buttonEnable.click(function handleClick () {
-  ssoEnabled = mod.buttonEnable.prop('checked');
-  if (debug) console.log("clicked: ", ssoEnabled);
-  self.port.emit('return_ssoEnabled', ssoEnabled);
-  set_buttonEnable();
+  mod.buttonEnable.click(function handleClick () {
+    ssoEnabled = mod.buttonEnable.prop('checked');
+    if (debug) console.log("clicked: ", ssoEnabled);
+    self.port.emit('return_ssoEnabled', ssoEnabled);
+    set_buttonEnable();
+  });
 });
 
-function set_buttonEnable ()
-{
-  mod.buttonEnable.button();
-  var _text = "Automatic Login ";
-  if (ssoEnabled) {
-    _text += "Enabled";
-  } else {
-    _text += "Disabled";
-  }
-  mod.buttonEnable.prop('checked', ssoEnabled);
-  mod.buttonEnable.button('option', 'label', _text);
-  mod.buttonEnable.button("refresh");
-}
+mod.buttonDocs = $('#chevaline_button_docs');
+mod.buttonDocs.ready(function () {
+  mod.buttonDocs.button();
+  self.port.emit('request_ssoEnabled');
+});
 
 function login (username, password) {
   if ($('.errors')[0]) {
@@ -163,6 +173,6 @@ function countdown (_period) {
 }
 
 // On run:
-set_buttonEnable();
+//set_buttonEnable();
 
 }); // end .ready()

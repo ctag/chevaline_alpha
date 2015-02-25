@@ -87,8 +87,10 @@ function sso_getCredentials(_callback)
   }
 
   function _onComplete (_cred) {
-    if (debug) console.log("sso credentials: ", _cred);
-    _callback(_cred);
+    if (_cred[0]) {
+      if (debug) console.log("sso credentials: ", _cred);
+      _callback(_cred);
+    }
   }
 
   sdk.passwords.search({

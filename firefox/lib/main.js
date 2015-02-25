@@ -37,23 +37,13 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 var debug = sdk.simplePrefs.prefs['debug'];
 var year = sdk.simplePrefs.prefs['year'];
 var semester = sdk.simplePrefs.prefs['semester'];
-var ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
 var canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
 //var ssoUser = sdk.simplePrefs.prefs['sso_user'];
 var ssoPageMod;
 
 function handle_simplePrefs (_pref)
 {
-	if (_pref === "sso_enabled") {
-		ssoEnabled = sdk.simplePrefs.prefs['sso_enabled'];
-		if (ssoEnabled) {
-			setupSSOpagemod();
-		} else {
-			ssoPageMod.destroy();
-		}
-	}
-
-	else if (_pref === 'canvas_enabled') {
+	if (_pref === 'canvas_enabled') {
 		canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
 	}
 
@@ -231,8 +221,14 @@ function setupCanvaspagemod ()
 function setupSSOpagemod ()
 {
 	function _onAttach (worker) {
+		worker.port.on('request_ssoEnabled', function () {
+			worker.port.emit('send_ssoEnabled', sdk.simplePrefs.prefs['sso_enabled']);
+		});
+
 		worker.port.on('return_ssoEnabled', function (_enabled) {
+			if (debug) console.log("main.js: updating sso_enabled simplePref, ", _enabled);
 			sdk.simplePrefs.prefs.sso_enabled = _enabled;
+			if (debug) console.log("main.js: new simplePrefs sso_enabled, ", sdk.simplePrefs.prefs.sso_enabled);
 		});
 
 		worker.port.on('request_ssoCredential', function () {
@@ -252,7 +248,7 @@ function setupSSOpagemod ()
 			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
 			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-			'sso_enabled': ssoEnabled,
+			'sso_enabled': sdk.simplePrefs.prefs['sso_enabled'],
 			'sso_timeout': 1000,
 			'debug': sdk.simplePrefs.prefs['debug']
 			},
