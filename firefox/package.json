@@ -6,6 +6,9 @@
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
   "version": "2015.2.24",
+  "homepage": "https://github.com/ctag/chevaline_alpha",
+  "icon": "data/chevalogo_32.png",
+  "icon64": "data/chevalogo_64.png",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
 		"cross-domain-content": ["https://uah.edu"]
