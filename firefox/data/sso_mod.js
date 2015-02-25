@@ -4,6 +4,8 @@ var debug = self.options.debug;
 
 if (debug) console.log("sso_mod.js loaded.");
 
+$(document).ready(function () {
+
 var html = new Object(); // Associate elements already on page
 var mod = new Object(); // Associate elements created by this js
 
@@ -162,3 +164,5 @@ function countdown (_period) {
 
 // On run:
 set_buttonEnable();
+
+}); // end .ready()
