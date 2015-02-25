@@ -11,8 +11,11 @@ This app doesn't work if your browser is closed or you put your computer into st
 
 ### Install
 
-You may now get the add-on from mozilla's site! (I think...)
-https://addons.mozilla.org/en-US/firefox/addon/chevaline/
+* Click on 'releases' at the bar near the top of this page. 
+* Pick the newest release. 
+* Click on the .xpi link for the release. 
+* Accept to have FireFox install the addon.
+* The addons should auto-update when new releases are available :D
 
 To install manually:
 
