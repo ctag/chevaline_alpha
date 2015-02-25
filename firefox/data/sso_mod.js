@@ -13,7 +13,7 @@ var ssoTimeoutPeriod = 200;
 
 self.port.on('send_ssoCredential', function (_credential) {
   //ssoUsername = _credential.username;
-  console.log("username: ", _credential.username);
+  if (debug) console.log("username: ", _credential.username);
   if (_credential.username) {
     html.inputUsername.val(_credential.username);
   } else {
@@ -139,6 +139,9 @@ function set_buttonEnable ()
 }
 
 function login (username, password) {
+  if ($('.errors')[0]) {
+    return; // Don't try logging in if there's an auth failure.
+  }
   if (html.inputUsername.val() && html.inputPassword.val()) {
     $('.btn-submit').click();
   }
