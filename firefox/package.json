@@ -5,7 +5,7 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.25",
+  "version": "2015.2.25.2",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
