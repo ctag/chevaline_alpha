@@ -68,7 +68,7 @@ sdk.simplePrefs.on("sso_user", handle_simplePrefs);
 /*
 * Items in browser's alt menus
 */
-
+/*
 menuitem.Menuitem({
 	id: "chevaline_button_test",
 	menuid: "menu_ToolsPopup",
@@ -78,6 +78,7 @@ menuitem.Menuitem({
 	insertbefore: "menu_pageInfo",
 	image: sdk.selfMod.data.url('chevalogo_16.png')
 });
+*/
 
 /*
 * Setup

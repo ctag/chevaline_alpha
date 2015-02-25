@@ -1,0 +1,14 @@
+#
+# A general list of things that need attention
+# Arranged in no particular order
+#
+
+Inbox searching in canvas
+Chevaline menu in canvas link-bar
+Better auto-login scripting
+prettier readme.md for github
+auto-updating through Github!
+
+
+For install.rdf:
+<em:updateURL></em:updateURL>
