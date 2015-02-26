@@ -77,7 +77,7 @@ menuitem.Menuitem({
 if (!sdk.ss.courses)
 {
 	if (debug) { console.log("Large course object not found, fetching new courses.json"); }
-	getCourses();
+	//getCourses();
 } else if (debug) {
 	console.log('sdk.ss.courses found: ', sdk.ss.courses);
 }
