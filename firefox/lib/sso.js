@@ -3,62 +3,29 @@
 
 var sdk = new Object();
 sdk.passwords = require('sdk/passwords');
-sdk.simplePrefs = require('sdk/simple-prefs');
+sdk.prefs = require('sdk/simple-prefs').prefs;
 
-var sso_url = sdk.simplePrefs.prefs['sso_url'];
-
-var debug = false; //sdk.simplePrefs.prefs['debug'];
-
-function sso_setCredentials(_username, _password)
+function sso_setCredentials(_username, _password, _callback)
 {
   function _error (_err) {
-    sso_handleError('sso_clearCredentials', _err);
+    sso_handleError('sso_setCredentials', _err);
   }
 
-  function _onComplete (_cred) {
-    _cred.forEach(sdk.passwords.remove);
-    if (debug) console.log("sso credentials: ", _cred);
-    _callback(_cred);
+  function _onComplete () {
+    if (sdk.prefs['debug']) console.log("new sso credentials: ", _cred);
+    sdk.passwords.store({
+      url: sdk.prefs['sso_url'],
+      username: _username,
+      password: _password
+    });
+    _callback;
   }
 
   sdk.passwords.search({
-    realm: "chevaline_sso",
-    onComplete: _onComplete,
+    url: sdk.prefs['sso_url'],
+    onComplete: sso_clearCredentials(_onComplete),
     onError: _error
   });
-}
-
-function sso_setUsername(_user, _callback)
-{
-  if (debug) console.log("sso_setUsername: ", _user);
-  ssoUser = _user;
-}
-
-function sso_getUsername()
-{
-  function _returnUsername(_cred)
-  {
-    // hrm :|
-  }
-  sso_getCredentials(_returnUsername);
-}
-
-function sso_setPassword(_password, _callback = null)
-{
-  if (debug) console.log("sso_setPassword: ", _password);
-  function _error (_err) {
-    sso_handleError('sso_setPassword error, ', _err);
-  }
-  if (debug) console.log("setting: ", ssoUser, _password);
-  function _addCred () {
-    sdk.passwords.store({
-      realm: "chevaline_sso",
-      username: ssoUser,
-      password: _password,
-      onError: _error
-    });
-  }
-  sso_clearCredentials(_addCred);
 }
 
 function sso_clearCredentials(_callback)
@@ -69,7 +36,7 @@ function sso_clearCredentials(_callback)
 
   function _onComplete (_cred) {
     _cred.forEach(sdk.passwords.remove);
-    if (debug) console.log("sso credentials: ", _cred);
+    if (sdk.prefs['debug']) console.log("sso credentials: ", _cred);
     _callback(_cred);
   }
 
@@ -88,13 +55,15 @@ function sso_getCredentials(_callback)
 
   function _onComplete (_cred) {
     if (_cred[0]) {
-      if (debug) console.log("sso credentials: ", _cred);
+      if (sdk.prefs['debug']) console.log("sso credentials: ", _cred);
       _callback(_cred);
+    } else {
+      if (sdk.prefs['debug']) console.log("sso_getCredentials: credentials appear to be missing");
     }
   }
 
   sdk.passwords.search({
-    url: sso_url,
+    url: sdk.prefs['sso_url'],
     onComplete: _onComplete,
     onError: _error
   });
@@ -102,11 +71,9 @@ function sso_getCredentials(_callback)
 
 function sso_handleError (_source, _err)
 {
-  if (debug) console.log('Chevaline_Alpha; ', _source, _err.message);
+  if (sdk.prefs['debug']) console.log('Chevaline_Alpha; ', _source, _err.message);
 }
 
-exports.SetUsername = sso_setUsername;
-exports.SetPassword = sso_setPassword;
 exports.GetCredentials = sso_getCredentials;
-exports.GetUsername = sso_getUsername;
+exports.SetCredentials = sso_setCredentials;
 exports.Clear = sso_clearCredentials;

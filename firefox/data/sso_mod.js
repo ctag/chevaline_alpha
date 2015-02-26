@@ -1,18 +1,39 @@
 // The *real* Single Sign On
 
+/*
+ * Setup
+ */
+
+// Unlike with simplePrefs, we have to keep up with this value manually, since self.options is static.
 var debug = self.options.debug;
-
-if (debug) console.log("sso_mod.js loaded.");
-
-var html = new Object(); // Associate elements already on page
-var mod = new Object(); // Associate elements created by this js
-
 var ssoEnabled = self.options.sso_enabled;
 var ssoTimeout = self.options.sso_timeout;
 var ssoTimeoutPeriod = 200;
+var ssoTimer = false;
+var html = new Object(); // Associate elements already on page
+var mod = new Object(); // Associate elements created by this js
 
-function set_buttonEnable ()
-{
+if (debug) console.log("sso_mod.js loading.");
+
+/*
+ * Functions
+ */
+
+function create_buttons() {
+  mod.buttonEnable.button();
+
+  mod.buttonEnable.click(function handleClick() {
+    ssoEnabled = mod.buttonEnable.prop('checked');
+    if (debug) console.log("clicked: ", ssoEnabled);
+    self.port.emit('return_ssoEnabled', ssoEnabled);
+    set_buttons();
+  });
+
+  mod.buttonDocs.button();
+  self.port.emit('request_ssoEnabled');
+}
+
+function set_buttons() {
   //mod.buttonEnable.button();
   var _text = "Automatic Login ";
   if (ssoEnabled) {
@@ -25,19 +46,45 @@ function set_buttonEnable ()
   mod.buttonEnable.button("refresh");
 }
 
-self.port.on('send_ssoEnabled', function (_enabled) {
+function login(username, password) {
+  if ($('.errors')[0]) {
+    return; // Don't try logging in if there's an auth failure.
+  }
+  if (html.inputUsername.val() && html.inputPassword.val()) {
+    $('.btn-submit').click();
+  }
+}
+
+function countdown(_period) {
+  var _time = $('#chevaline_timer');
+  if (debug) console.log(_time.html());
+  ssoTimeout = ssoTimeout - ssoTimeoutPeriod;
+  if (ssoTimeout < 0) {
+    _time.html("0ms");
+    window.clearInterval(ssoTimer);
+    login();
+  } else {
+    _time.html(ssoTimeout + "ms");
+  }
+}
+
+/*
+ * Ports
+ */
+
+self.port.on('send_ssoEnabled', function(_enabled) {
   ssoEnabled = _enabled;
-  set_buttonEnable();
+  set_buttons();
 });
 
-self.port.on('send_ssoCredential', function (_credential) {
+self.port.on('send_ssoCredential', function(_credential) {
   //ssoUsername = _credential.username;
   if (debug) console.log("username: ", _credential.username);
   if (_credential.username) {
     html.inputUsername.val(_credential.username);
   } else {
     html.inputUsername.val('No Username Found :|');
-    html.inputUsername.click(function () {
+    html.inputUsername.click(function() {
       $(this).val('');
     });
     return; // Don't even try filling the password.
@@ -52,44 +99,47 @@ if (ssoEnabled && (!$('.errors')[0])) {
   self.port.emit('request_ssoCredential');
 }
 
-$(document).ready(function () {
+/*
+ * Execution
+ */
+$(document).ready(function() {
 
-if (ssoEnabled && !debug) {
-  var ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
-}
+  if (ssoEnabled && !debug) {
+    ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
+  }
 
-html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
-html.uselessWarning.html("");
+  html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
+  html.uselessWarning.html("");
 
-html.uselessQuestion = $("p:contains('What is Single-Sign on')");
-html.uselessQuestion.html("Why does this page look different?");
+  html.uselessQuestion = $("p:contains('What is Single-Sign on')");
+  html.uselessQuestion.html("Why does this page look different?");
 
-html.uselessDescription = $("p:contains('centralized, easy-to-use login system')");
-html.uselessDescription.html('Chevaline Alpha is running a content-script on this login page in order to aid \
+  html.uselessDescription = $("p:contains('centralized, easy-to-use login system')");
+  html.uselessDescription.html('Chevaline Alpha is running a content-script on this login page in order to aid \
 you logging in. Rather than make empty promises, we encourage you to browse the \
 <a href="http://berocs.com">source code</a> to the plugin \
 and see for yourself that it does not pose a substantial threat to your account\'s security.');
 
-html.body = $('body');
-html.login = $('#login');
-html.loginPos = html.login.offset();
-html.loginWidth = html.login.width();
-html.loginHeight = html.login.height();
-html.inputUsername = $('#username');
-html.inputPassword = $('#password');
+  html.body = $('body');
+  html.login = $('#login');
+  html.loginPos = html.login.offset();
+  html.loginWidth = html.login.width();
+  html.loginHeight = html.login.height();
+  html.inputUsername = $('#username');
+  html.inputPassword = $('#password');
 
-html.inputUsername.attr('autocomplete', 'on');
-html.inputPassword.attr('autocomplete', 'on');
+  html.inputUsername.attr('autocomplete', 'on');
+  html.inputPassword.attr('autocomplete', 'on');
 
-mod.padding = 15;
-mod.pos = new Object();
-mod.pos.left = html.loginPos.left+350;
-mod.pos.top = html.loginPos.top;
-mod.borderWidth = 2;
-mod.width = (html.loginWidth - (mod.padding*2) - (mod.borderWidth*2) );
-mod.height = (html.loginHeight - (mod.padding*2) - (mod.borderWidth*2) );
+  mod.padding = 15;
+  mod.pos = new Object();
+  mod.pos.left = html.loginPos.left + 350;
+  mod.pos.top = html.loginPos.top;
+  mod.borderWidth = 2;
+  mod.width = (html.loginWidth - (mod.padding * 2) - (mod.borderWidth * 2));
+  mod.height = (html.loginHeight - (mod.padding * 2) - (mod.borderWidth * 2));
 
-mod.css = '<style> \
+  mod.css = '<style> \
 .chevaline { \
   font-family: "Lucida Console", Monaco, monospace; \
   font-size: 16px; \
@@ -107,7 +157,7 @@ mod.css = '<style> \
 } \
 </style>';
 
-mod.dialog = ' \
+  mod.dialog = ' \
 <div id="chevaline_dialog" class="box fl-panel chevaline"> \
 <h3 style="text-align: center;">Chevaline Alpha - SSO Aide</h3> \
 <hr> \
@@ -122,57 +172,22 @@ Configuration options \
 </div> \
 </center></div>';
 
-//mod.theme_css = '<link href="https://code.jquery.com/ui/1.11.3/themes/dark-hive/jquery-ui.css" rel="stylesheet" type="text/css" />';
-mod.theme_css = '<link href="' + self.options.jquery_ui_theme_css + '" rel="stylesheet" type="text/css">';
-$('head').append(mod.theme_css);
+  mod.theme_css = '<link href="' + self.options.jquery_ui_theme_css + '" rel="stylesheet" type="text/css">';
+  $('head').append(mod.theme_css);
 
-mod.ui_css = '<link href="' + self.options.jquery_ui_css + '" rel="stylesheet" type="text/css">';
-$('head').append(mod.ui_css);
+  mod.ui_css = '<link href="' + self.options.jquery_ui_css + '" rel="stylesheet" type="text/css">';
+  $('head').append(mod.ui_css);
 
-html.login.append(mod.dialog);
-html.body.append(mod.css);
+  html.login.append(mod.dialog);
+  html.body.append(mod.css);
 
-mod.buttonEnable = $('#chevaline_autologin_enable');
-mod.buttonEnable.ready(function () {
-  mod.buttonEnable.button();
+  mod.buttonEnable = $('#chevaline_autologin_enable');
+  mod.buttonDocs = $('#chevaline_button_docs');
 
-  mod.buttonEnable.click(function handleClick () {
-    ssoEnabled = mod.buttonEnable.prop('checked');
-    if (debug) console.log("clicked: ", ssoEnabled);
-    self.port.emit('return_ssoEnabled', ssoEnabled);
-    set_buttonEnable();
+  mod.buttonDocs.ready(function() {
+    mod.buttonEnable.ready(function() {
+      create_buttons();
+    });
   });
-});
-
-mod.buttonDocs = $('#chevaline_button_docs');
-mod.buttonDocs.ready(function () {
-  mod.buttonDocs.button();
-  self.port.emit('request_ssoEnabled');
-});
-
-function login (username, password) {
-  if ($('.errors')[0]) {
-    return; // Don't try logging in if there's an auth failure.
-  }
-  if (html.inputUsername.val() && html.inputPassword.val()) {
-    $('.btn-submit').click();
-  }
-}
-
-function countdown (_period) {
-  var _time = $('#chevaline_timer');
-    if (debug) console.log(_time.html());
-    ssoTimeout = ssoTimeout - ssoTimeoutPeriod;
-    if (ssoTimeout < 0) {
-      _time.html("0ms");
-      window.clearInterval(ssoTimer);
-      login();
-    } else {
-      _time.html(ssoTimeout + "ms");
-    }
-}
-
-// On run:
-//set_buttonEnable();
 
 }); // end .ready()

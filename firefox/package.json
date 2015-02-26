@@ -5,13 +5,13 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.25.3",
+  "version": "2015.2.26",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
-		"cross-domain-content": ["https://uah.edu"]
+		"cross-domain-content": ["https://uah.edu", "https://canvas.instructure.com"]
   },
   "preferences": [{
 		"name": "year",
@@ -32,7 +32,8 @@
 		"name": "sso_url",
 		"title": "URL to use for Automatic Login.\nYou should not need to change this.",
 		"type": "string",
-		"value": "https://sso.uah.edu"
+		"value": "https://sso.uah.edu",
+    "hidden": true
   },{
 		"name": "canvas_enabled",
 		"title": "Enable enhancements to your Canvas session?",

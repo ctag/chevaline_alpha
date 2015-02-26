@@ -18,6 +18,7 @@ sdk.favicons = require("sdk/places/favicon");
 sdk.timers = require("sdk/timers");
 sdk.urlRequest = require("sdk/request");
 sdk.simplePrefs = require('sdk/simple-prefs');
+sdk.prefs = require('sdk/simple-prefs').prefs;
 sdk.ss = require('sdk/simple-storage').storage;
 sdk.panel = require('sdk/panel');
 sdk.passwords = require('sdk/passwords');
@@ -34,26 +35,8 @@ const {XMLHttpRequest} = require("sdk/net/xhr");
 * Global Vars
 */
 
-var debug = sdk.simplePrefs.prefs['debug'];
-var year = sdk.simplePrefs.prefs['year'];
-var semester = sdk.simplePrefs.prefs['semester'];
-var canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
-//var ssoUser = sdk.simplePrefs.prefs['sso_user'];
-var ssoPageMod;
-
-function handle_simplePrefs (_pref)
-{
-	if (_pref === 'canvas_enabled') {
-		canvasEnabled = sdk.simplePrefs.prefs['canvas_enabled'];
-	}
-
-	else if (_pref === 'debug') {
-		debug = sdk.simplePrefs.prefs['debug'];
-	}
-}
-
-sdk.simplePrefs.on("sso_enabled", handle_simplePrefs);
-sdk.simplePrefs.on("sso_user", handle_simplePrefs);
+var year = sdk.prefs['year'];
+var semester = sdk.prefs['semester'];
 
 /*
 * Items in browser's alt menus
@@ -71,23 +54,11 @@ menuitem.Menuitem({
 */
 
 /*
-* Setup
-*/
-
-if (!sdk.ss.courses)
-{
-	if (debug) { console.log("Large course object not found, fetching new courses.json"); }
-	//getCourses();
-} else if (debug) {
-	console.log('sdk.ss.courses found: ', sdk.ss.courses);
-}
-
-/*
 * Methods
 */
 
 function getCourses () {
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.time("getCourses");
 		console.log("getCourses(): sending berocs.com request.");
 	}
@@ -96,9 +67,9 @@ function getCourses () {
 		onComplete: function saveCoursesData (result) {
 			console.log("berocs.com result: ", result);
 			sdk.ss.courses=result.json;
-			if (debug) console.log("sdk.ss.courses: ", sdk.ss.courses);
+			if (sdk.prefs['debug']) console.log("sdk.ss.courses: ", sdk.ss.courses);
 			makeIndex();
-			if (debug) {
+			if (sdk.prefs['debug']) {
 				console.timeEnd("getCourses");
 			}
 		}
@@ -106,20 +77,20 @@ function getCourses () {
 }
 
 function makeIndex () {
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.time('makeIndex');
 		console.log('makeIndex(): generating index.');
 	}
 
 	if (!sdk.ss.courses)
 	{
-		if (debug) console.log('sdk.ss.courses not found, aborting makeIndex().');
+		if (sdk.prefs['debug']) console.log('sdk.ss.courses not found, aborting makeIndex().');
 		return;
 	}
 
 	sdk.ss.coursesIndex = {};
 	sdk.ss.coursesTimeStamp = sdk.ss.courses[0][0];
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.log("sdk.ss.courses generated on: ", sdk.ss.coursesTimeStamp);
 	}
 
@@ -144,21 +115,21 @@ function makeIndex () {
 		}
 
 	}
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.log("makeIndex(): index created: ", sdk.ss.coursesIndex);
 		console.timeEnd('makeIndex');
 	}
 }
 
 function traverseIndex () {
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.time('traverseIndex');
 		console.log('traverseIndex(): printing the index.');
 	}
 
 	if (!sdk.ss.courses)
 	{
-		if (debug) {
+		if (sdk.prefs['debug']) {
 			console.log("traverseIndex(): sdk.ss.courses missing, aborting function");
 		}
 		return;
@@ -168,21 +139,110 @@ function traverseIndex () {
 	{
 		for (var y = 1; y < sdk.ss.courses[x].length; y++)
 		{
-			if (debug) {
+			if (sdk.prefs['debug']) {
 				console.log('course: ', sdk.ss.coursesIndex[x][y]);
 			}
 		}
 	}
 
-	if (debug) {
+	if (sdk.prefs['debug']) {
 		console.timeEnd('traverseIndex');
 	}
 }
+
+function setupCanvaspagemod ()
+{
+	function _onAttach (worker) {
+		console.log("attaching to canvas");
+		// This works, POST does not.
+		sdk.urlRequest.Request({
+			url: 'https://canvas.instructure.com/api/v1/courses?access_token=<token>',
+			/*headers: {
+				"Authorization": 'BEARER <token>'
+				/*"Access-Control-Allow-Origin": "*"*
+			},*/
+			onComplete: function (resp) {
+				console.log("here 1 : ", resp, resp.json, /*resp.text,*/ resp.status, resp.statusText, resp.headers);
+			}
+		}).get();
+	}
+	canvasPageMod = sdk.pageMod.PageMod({
+		include: 'https://uah.instructure.com/*',
+		//exclude: /.*conversations.*/,
+		contentScriptWhen: 'end',
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js")],
+		contentScriptOptions: {
+			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
+			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+		},
+		onAttach: _onAttach
+	});
+
+	sdk.pageMod.PageMod({
+		include: /.*uah\.instructure.*conversations.*/,
+		contentScriptWhen: 'start',
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js"), sdk.selfMod.data.url('jso.js'), sdk.selfMod.data.url("canvas_inbox_mod.js")],
+		contentScriptOptions: {
+			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
+			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+		},
+		onAttach: _onAttach
+	});
+}
+
+function setupSSOpagemod ()
+{
+	function _onAttach (worker) {
+		worker.port.on('request_ssoEnabled', function () {
+			worker.port.emit('send_ssoEnabled', sdk.prefs['sso_enabled']);
+		});
+
+		worker.port.on('return_ssoEnabled', function (_enabled) {
+			if (sdk.prefs['debug']) console.log("main.js: updating sso_enabled simplePref, ", _enabled);
+			sdk.prefs.sso_enabled = _enabled;
+			if (sdk.prefs['debug']) console.log("main.js: new simplePrefs sso_enabled, ", sdk.prefs.sso_enabled);
+		});
+
+		worker.port.on('request_ssoCredential', function () {
+			function _sendCredential (_cred) {
+				if (sdk.prefs['debug']) console.log("credentials: ", _cred);
+				worker.port.emit('send_ssoCredential', _cred[0]);
+			}
+			sso.GetCredentials(_sendCredential);
+		});
+	}
+	ssoPageMod = sdk.pageMod.PageMod({
+		include: ["https://sso.uah.edu/cas/*", 'https://dev.uah.edu/cas/login'],
+		contentScriptWhen: "ready",
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
+		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING overrides it */
+		contentScriptOptions: {
+			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
+			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
+			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
+			'sso_enabled': sdk.prefs['sso_enabled'],
+			'sso_timeout': 1000,
+			'debug': sdk.prefs['debug']
+			},
+		onAttach: _onAttach
+	});
+}
+
 /*
 * Execution
 */
 
-if (debug) {
+if (!sdk.ss.courses)
+{
+	if (sdk.prefs['debug']) { console.log("Large course object not found, fetching new courses.json"); }
+	//getCourses();
+} else if (sdk.prefs['debug']) {
+	console.log('sdk.ss.courses found: ', sdk.ss.courses);
+}
+
+if (sdk.prefs['debug']) {
 	sdk.tabs.open("about:addons");
 	sdk.tabs.open("http://canvas.uah.edu");
 	//sdk.tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");
@@ -199,59 +259,3 @@ if (sdk.ss.courses && sdk.ss.courseIndex)
 
 setupSSOpagemod();
 setupCanvaspagemod();
-
-function setupCanvaspagemod ()
-{
-	function _onAttach (worker) {
-		//
-	}
-	canvasPageMod = sdk.pageMod.PageMod({
-		include: 'https://uah.instructure.com/*',
-		contentScriptWhen: 'end',
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js")],
-		contentScriptOptions: {
-			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
-			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
-		},
-		onAttach: _onAttach
-	});
-}
-
-function setupSSOpagemod ()
-{
-	function _onAttach (worker) {
-		worker.port.on('request_ssoEnabled', function () {
-			worker.port.emit('send_ssoEnabled', sdk.simplePrefs.prefs['sso_enabled']);
-		});
-
-		worker.port.on('return_ssoEnabled', function (_enabled) {
-			if (debug) console.log("main.js: updating sso_enabled simplePref, ", _enabled);
-			sdk.simplePrefs.prefs.sso_enabled = _enabled;
-			if (debug) console.log("main.js: new simplePrefs sso_enabled, ", sdk.simplePrefs.prefs.sso_enabled);
-		});
-
-		worker.port.on('request_ssoCredential', function () {
-			function _sendCredential (_cred) {
-				if (debug) console.log("credentials: ", _cred);
-				worker.port.emit('send_ssoCredential', _cred[0]);
-			}
-			sso.GetCredentials(_sendCredential);
-		});
-	}
-	ssoPageMod = sdk.pageMod.PageMod({
-		include: ["https://sso.uah.edu/cas/*", 'https://dev.uah.edu/cas/login'],
-		contentScriptWhen: "ready",
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("sso_mod.js")],
-		//contentStyleFile: [sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css')], /* Doesn't work, because EVERYTHING overrides it */
-		contentScriptOptions: {
-			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
-			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-			'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-			'sso_enabled': sdk.simplePrefs.prefs['sso_enabled'],
-			'sso_timeout': 1000,
-			'debug': sdk.simplePrefs.prefs['debug']
-			},
-		onAttach: _onAttach
-	});
-}
