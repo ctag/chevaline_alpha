@@ -40,6 +40,11 @@
 		"type": "bool",
 		"value": false
   },{
+		"name": "api_token",
+		"title": "Canvas API Access Token. This feature is unsecure.",
+		"type": "string",
+		"value": ""
+  },{
 		"name": "debug",
 		"title": "Enable debugging?",
 		"type": "bool",

@@ -9,39 +9,32 @@ Something? \
 </div> \
 </div>';
 
-/*
-var jso = new JSO({
-  providerID: "Canvas",
-  client_id: "3930~AypxQk89BAySb012revtBR5MW6lknVp8pJl588XiFP6fxXalA3fbJ0WQaehwZnsQ",
-  authorization: "https://canvas.instructure.com/api/v1/courses"
-});
-
-jso.callback();
-
-JSO.enablejQuery($);
-
-jso.ajax({
-  url: "https://www.canvas.instructure.com/api/v1/courses",
-  dataType: 'json',
-  success: function(data){
-    console.log("success, ", data);
-  }
-});
-*/
-
 $(document).ready( function () {
-  var test = $('#search-btn').clone().attr('id', 'chevaline_search_btn').removeClass('ac-search-btn recipient-finder');
+  var test = $('#search-btn').clone().attr('id', 'chevaline_search_btn')
+    .prop('title', 'Search FullText').removeClass('ac-search-btn recipient-finder')
+    .css({
+      'border-radius': '3px',
+      'border': '1px solid #D1D1D1',
+      'margin-left': '5px'
+    });
+  test.find('i').removeClass('icon-address-book').addClass('ui-icon ui-icon-search');
   var width = $('#search-autocomplete').width();
-  $('#search-autocomplete').css('width', (width+50)+"px").append(test);
+  $('#ac-result-list-2').css({
+    'position': 'relative',
+    'left': '-55px'
+  })
+  $('#search-autocomplete').css('width', (width+55)+"px").append(test);
+
+  self.port.on('send_searchResults', function (_results) {
+    console.log("received results: ", _results);
+    var _search = $(".subject:contains('" + _results + "')").parent();
+    console.log(_search);
+    _search.css('background-color', '#FFFF00');
+    //_search.text('nope');
+  })
 
   test.click(function () {
-    var search = $('input#compose-message-recipients').text();
-    var messages = $('ul.messages').children().each(function () {
-      $(this).click();
-      var match = $('div.message-detail:contains("' +search+ '")')[0];
-      if (!match) {
-        $(this).hide();
-      }
-    });
+    var search = $('input#compose-message-recipients').val();
+    self.port.emit('request_search', search);
   });
 });

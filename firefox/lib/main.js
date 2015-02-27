@@ -29,6 +29,7 @@ sdk.passwords = require('sdk/passwords');
 
 var menuitem = require("menuitems");
 var sso = require("./sso.js");
+var crapi = require("./canvas_api.js");
 const {XMLHttpRequest} = require("sdk/net/xhr");
 
 /*
@@ -154,17 +155,19 @@ function setupCanvaspagemod ()
 {
 	function _onAttach (worker) {
 		console.log("attaching to canvas");
-		// This works, POST does not.
-		sdk.urlRequest.Request({
-			url: 'https://canvas.instructure.com/api/v1/courses?access_token=<token>',
-			/*headers: {
-				"Authorization": 'BEARER <token>'
-				/*"Access-Control-Allow-Origin": "*"*
-			},*/
-			onComplete: function (resp) {
-				console.log("here 1 : ", resp, resp.json, /*resp.text,*/ resp.status, resp.statusText, resp.headers);
-			}
-		}).get();
+		worker.port.on('request_search', function (_search) {
+			console.log("searching for: ", _search);
+			crapi.SearchConversations(_search, function (_results) {
+				if (typeof(_results) === 'undefined') {
+					return; // no results
+				}
+				for (var i = 0; i < _results.length; i++) {
+					crapi.GetOneConversation(_results[i].ref, function (_return) {
+						worker.port.emit('send_searchResults', _return.subject);
+					})
+				}
+			});
+		})
 	}
 	canvasPageMod = sdk.pageMod.PageMod({
 		include: 'https://uah.instructure.com/*',
@@ -197,6 +200,19 @@ function setupSSOpagemod ()
 	function _onAttach (worker) {
 		worker.port.on('request_ssoEnabled', function () {
 			worker.port.emit('send_ssoEnabled', sdk.prefs['sso_enabled']);
+			crapi.IndexConversations();
+			return;
+			crapi.GetAllConversationIds(function (_array) {
+				//console.log("test: ", _array);
+				var _len = _array.length;
+				for (var _index = 0; _index < _len; _index++) {
+					console.log("querying: ", _array[_index]);
+					//console.log("Conversation: ", _array[_index].id, _array[_index].last_message);
+					crapi.GetOneConversation(_array[_index], function (_array) {
+						console.log("one conversation: ", _array.subject);
+					});
+				}
+			});
 		});
 
 		worker.port.on('return_ssoEnabled', function (_enabled) {
