@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cfx run -p /tmp/firefox_profiledir
+cfx run -p /home/berocs/Downloads/firefox_profiledir
 
