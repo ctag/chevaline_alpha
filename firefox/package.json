@@ -5,21 +5,26 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
-  "version": "2015.2.26",
+  "version": "2015.2.28",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
   "dependencies": ["menuitems", "addon-sdk"],
   "permissions": {
-		"cross-domain-content": ["https://uah.edu", "https://canvas.instructure.com"]
+		"cross-domain-content": ["https://uah.edu", "https://canvas.instructure.com", "https://uah.instructure.com"]
   },
   "preferences": [{
-		"name": "year",
+		"name": "crn_enabled",
+		"title": "Enable Automatic Login for UAH CAS? Only works if you've stored your CAS credentials in the firefox password manager.",
+		"type": "bool",
+		"value": false
+  },{
+		"name": "crn_year",
 		"title": "Year to pull courses for. Not Implemented.",
 		"type": "integer",
 		"value": 2015
   },{
-		"name": "semester",
+		"name": "crn_semester",
 		"title": "Semester to pull courses for. Not Implemented.",
 		"type": "string",
 		"value": "sprg"
@@ -40,13 +45,13 @@
 		"type": "bool",
 		"value": false
   },{
-		"name": "api_token",
-		"title": "Canvas API Access Token. This feature is unsecure.",
+		"name": "canvas_api_token",
+		"title": "Canvas API Access Token. This feature is unsecure. Used for fulltext inbox searching. Leave blank to disable. Generate token from your user settings page in Canvas.",
 		"type": "string",
 		"value": ""
   },{
 		"name": "debug",
-		"title": "Enable debugging?",
+		"title": "Enable debugging? Side effect: disables autologin.",
 		"type": "bool",
 		"value": false
   }

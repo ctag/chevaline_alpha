@@ -30,14 +30,15 @@ sdk.passwords = require('sdk/passwords');
 var menuitem = require("menuitems");
 var sso = require("./sso.js");
 var crapi = require("./canvas_api.js");
+var lunr = require('./lunr_search.js');
 const {XMLHttpRequest} = require("sdk/net/xhr");
 
 /*
 * Global Vars
 */
 
-var year = sdk.prefs['year'];
-var semester = sdk.prefs['semester'];
+var year = sdk.prefs['crn_year'];
+var semester = sdk.prefs['crn_semester'];
 
 /*
 * Items in browser's alt menus
@@ -155,9 +156,11 @@ function setupCanvaspagemod ()
 {
 	function _onAttach (worker) {
 		console.log("attaching to canvas");
+		//lunr.Update();
+
 		worker.port.on('request_search', function (_search) {
 			console.log("searching for: ", _search);
-			crapi.SearchConversations(_search, function (_results) {
+			lunr.Search(_search, function (_results) {
 				if (typeof(_results) === 'undefined') {
 					return; // no results
 				}
@@ -185,7 +188,7 @@ function setupCanvaspagemod ()
 	sdk.pageMod.PageMod({
 		include: /.*uah\.instructure.*conversations.*/,
 		contentScriptWhen: 'start',
-		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js"), sdk.selfMod.data.url('jso.js'), sdk.selfMod.data.url("canvas_inbox_mod.js")],
+		contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js"), sdk.selfMod.data.url("canvas_inbox_mod.js")],
 		contentScriptOptions: {
 			'background_url' : sdk.selfMod.data.url('dialog_background_alternate.png'),
 			'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
@@ -200,19 +203,6 @@ function setupSSOpagemod ()
 	function _onAttach (worker) {
 		worker.port.on('request_ssoEnabled', function () {
 			worker.port.emit('send_ssoEnabled', sdk.prefs['sso_enabled']);
-			crapi.IndexConversations();
-			return;
-			crapi.GetAllConversationIds(function (_array) {
-				//console.log("test: ", _array);
-				var _len = _array.length;
-				for (var _index = 0; _index < _len; _index++) {
-					console.log("querying: ", _array[_index]);
-					//console.log("Conversation: ", _array[_index].id, _array[_index].last_message);
-					crapi.GetOneConversation(_array[_index], function (_array) {
-						console.log("one conversation: ", _array.subject);
-					});
-				}
-			});
 		});
 
 		worker.port.on('return_ssoEnabled', function (_enabled) {
@@ -228,6 +218,9 @@ function setupSSOpagemod ()
 			}
 			sso.GetCredentials(_sendCredential);
 		});
+		if (sdk.prefs['canvas_api_token']) {
+			lunr.Update();
+		}
 	}
 	ssoPageMod = sdk.pageMod.PageMod({
 		include: ["https://sso.uah.edu/cas/*", 'https://dev.uah.edu/cas/login'],
@@ -275,3 +268,4 @@ if (sdk.ss.courses && sdk.ss.courseIndex)
 
 setupSSOpagemod();
 setupCanvaspagemod();
+lunr.Initialize();
