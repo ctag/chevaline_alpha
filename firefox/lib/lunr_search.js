@@ -30,17 +30,13 @@ var searchIndex = lunr(function() {
  * Methods
  */
 
-function insertIntoIndex (_data) {
+function insertIntoIndex(_data) {
   console.log("\n\ninserting: ", _data);
-  if (!sdk.ss.storage.conversations) {
-    // There are no stored conversations
-    createSS();
-  }
   var _body = '';
   for (var i2 = 0; i2 < _data.messages.length; i2++) {
     _body += _data.messages[i2].body;
   }
-  /*sdk.ss.storage.*/searchIndex.update({
+  searchIndex.update({
     id: _data.id,
     subject: _data.subject,
     last_message_at: _data.last_message_at,
@@ -48,61 +44,48 @@ function insertIntoIndex (_data) {
   });
 }
 
-function addConversationFromId (_array) {
+function addConversationsFromId(_array, _callback) {
   if (typeof(_array) == 'undefined') {
-    //console.log('Tried to insert empty array to search index. Aborting.');
+    if (sdk.prefs['debug']) console.log('Tried to insert empty array to search index. Aborting.');
     return;
   }
   for (var i = 0; i < _array.length; i++) {
     crapi.GetOneConversation(_array[i], insertIntoIndex);
   }
+  _callback();
 }
 
 // Gets the 10 latest conversations and updates the index with them
 function updateIndex() {
-  /*
-  if (typeof(sdk.ss.storage.searchIndex) == 'undefined') {
-    createIndex();
-  }
-  */
-  crapi.GetConversations(function (_data) {
+  crapi.GetConversations(function(_data) {
     for (var _index = 0; _index < _data.length; _index++) {
-      addConversationFromId(_data[_index].id);
+      addConversationsFromId(_data[_index].id, doBackup);
     }
   });
 }
 
-// Initialize the searchIndex in simple storage
-function createIndex() {
-  //console.log('Creating search index.');
-  // I'm lazy, just toss the whole thing into simple storage
-  sdk.ss.storage.searchIndex = lunr(function() {
-    this.field('subject', {
-      boost: 10
-    })
-    this.field('last_message_at', {
-      boost: 0.01 // We don't really want to search for the date.
-    })
-    this.field('body')
-    this.ref('id')
-  });
+function doBackup() {
+  sdk.ss.storage.searchIndex = searchIndex.toJSON();
+  if (sdk.prefs['debug']) console.log('Generated search index backup: ', sdk.ss.storage.searchIndex);
 }
 
 // Setup the index with all messages
 function doInitialize() {
-  /*
-  if (typeof(sdk.ss.storage.searchIndex) == 'undefined') {
-    createIndex();
+  delete sdk.ss.storage.searchIndex;
+  if (typeof(sdk.ss.storage.searchIndex) != 'undefined') {
+    // Previous index is available.
+    if (sdk.prefs['debug']) console.log('\n\nRestoring search index from backup.', sdk.ss.storage.searchIndex);
+    searchIndex = lunr.Index.load(sdk.ss.storage.searchIndex);
+    return;
   }
-  */
-  crapi.GetAllConversationIds(addConversationFromId);
+  // No backup available, generate the whole thing again.
+  crapi.GetAllConversationIds(addConversationsFromId, doBackup);
 }
 
 // Run a query against the searchIndex
 function doSearch(_text, _callback) {
-  console.log("search results: ", /*sdk.ss.storage.*/searchIndex.search(_text));
-  console.log(searchIndex.toJSON());
-  _callback(/*sdk.ss.storage.*/searchIndex.search(_text));
+  if (sdk.prefs['debug']) console.log("\n\nSearch results: ", searchIndex.search(_text));
+  _callback(searchIndex.search(_text));
 }
 
 /*

@@ -3,7 +3,12 @@
 # Arranged in no particular order
 #
 
-Inbox searching in canvas
+Fulltext searching:
+- Add top menu options for index-rebuild
+- get storage working
+- optimize search returns
+- make cleaner search result presentations
+
 Chevaline menu in canvas link-bar
 Better auto-login scripting
 prettier readme.md for github
