@@ -3,147 +3,118 @@
    CSS adopted from aokp.co
    ========================================================================== */
 
-
 #header {
   z-index: 12;
 }
-
 #charger-swagger {
-    position: fixed;
-    z-index: 11;
-    height: 100%;
-    width: 100%;
-    display: none;
+  position: fixed;
+  z-index: 11;
+  height: 100%;
+  width: 100%;
+  display: none;
 }
-
 .charger-pulse {
   background: #E4418B;
-	-moz-animation: phasepulse 2s ease-in-out infinite;
+  -moz-animation: phasepulse 6s ease-in-out infinite;
 }
-
 #pinkglow {
   z-index: 2;
   position: fixed;
   width: 100%;
   height: 100%;
   background: #E4418B;
-	-webkit-animation: phaseglow 2s ease-in-out infinite;
-	-moz-animation: phaseglow 2s ease-in-out infinite;
-	-o-animation: phaseglow 2s ease-in-out infinite;
+  -moz-animation: phaseglow 8s ease-in-out infinite;
 }
-
 .swag-element {
-	position: absolute;
-    bottom: 0;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 200px;
+  height: 200px;
 }
-
+.swag-img {/*
+  width: 100%;
+  height: 100%;*/
+}
 .x1 {
-	-webkit-animation: moveswagfedora 7s linear infinite;
-	-moz-animation: moveswagfedora 7s linear infinite;
-	-o-animation: moveswagfedora 7s linear infinite;
+  -moz-animation: moveswagfedora 8s linear infinite;
 }
-
 .x2 {
-	left: 8%;
-	-webkit-animation: moveswagfedora 4s linear infinite;
-	-moz-animation: moveswagfedora 4s linear infinite;
-	-o-animation: moveswagfedora 4s linear infinite;
+  -moz-animation: moveswag 12s linear infinite;
 }
-
 .x3 {
-	left: 15%;
-	-webkit-animation: moveswagfedora 14s linear infinite;
-	-moz-animation: moveswagfedora 14s linear infinite;
-	-o-animation: moveswagfedora 14s linear infinite;
+  -moz-animation: moveswagfedora 14s linear infinite;
 }
-
 .x4 {
-	left: 85%;
-    -webkit-animation: moveswagfedora 9s linear infinite;
-	-moz-animation: moveswagfedora 9s linear infinite;
-	-o-animation: moveswagfedora 9s linear infinite;
+  -moz-animation: moveswag2 18s linear infinite;
 }
-
 .x5 {
-	left: 97%;
-    -webkit-animation: moveswagfedora 16s linear infinite;
-	-moz-animation: moveswagfedora 16s linear infinite;
-	-o-animation: moveswagfedora 16s linear infinite;
+  -moz-animation: moveswagfedora 24s linear infinite;
 }
-
-.x6 {
-	left: 33%;
-    -webkit-animation: moveswag 5s linear infinite;
-	-moz-animation: moveswag 5s linear infinite;
-	-o-animation: moveswag 5s linear infinite;
-}
-
-.x7 {
-	left: 15%;
-    -webkit-animation: moveswag2 8s linear infinite;
-	-moz-animation: moveswag2 8s linear infinite;
-	-o-animation: moveswag2 8s linear infinite;
-}
-
-.x8 {
-	left: 65%;
-    -webkit-animation: moveswag 12s linear infinite;
-	-moz-animation: moveswag 12s linear infinite;
-	-o-animation: moveswag 12s linear infinite;
-}
-
-.x9 {
-	left: 88%;
-    -webkit-animation: moveswag2 5s linear infinite;
-	-moz-animation: moveswag2 5s linear infinite;
-	-o-animation: moveswag2 5s linear infinite;
-}
-
-.x10 {
-	left: 94%;
-    -webkit-animation: moveswag2 10s linear infinite;
-	-moz-animation: moveswag2 10s linear infinite;
-	-o-animation: moveswag2 10s linear infinite;
-}
-
 @-moz-keyframes phaseglow {
-    0% { opacity: 0; } 50% { opacity: .3; } 100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 0;
+  }
 }
-
 @-moz-keyframes phasepulse {
-  0% { background-color: #000; } 50% { background-color: #00F; } 100% { background-color: #000; }
+  0% {
+    background-color: #F0F0F0;
+  }
+  25% {
+    background-color: #8070F0;
+  }
+  50% {
+    background-color: #E4418B;
+  }
+  75% {
+    background-color: #8070F0;
+  }
+  100% {
+    background-color: #F0F0F0;
+  }
 }
-
 @-moz-keyframes moveswag {
-	0% {
-        -moz-transform: translateY(0) rotate(0deg) scale(0.2);
-	}
-    50% {
-        -moz-transform: translateY(-600px) rotate(360deg) scale(0.35);
-    }
-	100% {
-        -moz-transform: translateY(-1200px) rotate(720deg) scale(0.2);
-	}
+  0% {
+    -moz-transform: translateY(200px) rotate(0deg) scale(0.5);
+    opacity: 1.0;
+  }
+  50% {
+    -moz-transform: translateY(-50%) rotate(360deg) scale(0.6);
+  }
+  75% {
+    -moz-transform: translateY(-100%) rotate(420deg) scale(0.6);
+    opacity: 1.0;
+  }
+  100% {
+    -moz-transform: translateY(-150%) rotate(720deg) scale(0.4);
+    opacity: 0.0;
+  }
 }
 @-moz-keyframes moveswag2 {
-	0% {
-        -moz-transform: translateY(0) rotate(0deg) scale(0.3);
-	}
-    50% {
-        -moz-transform: translateY(-600px) rotate(-360deg) scale(0.2);
-    }
-	100% {
-        -moz-transform: translateY(-1200px) rotate(-720deg) scale(0.1);
-	}
+  0% {
+    -moz-transform: translateY(0) rotate(0deg) scale(0.4);
+  }
+  50% {
+    -moz-transform: translateY(-600px) rotate(-360deg) scale(0.3);
+  }
+  100% {
+    -moz-transform: translateY(-1200px) rotate(-720deg) scale(0.2);
+  }
 }
 @-moz-keyframes moveswagfedora {
-	0% {
-        -moz-transform: translateY(0) rotate(0deg) scale(1);
-	}
-    50% {
-        -moz-transform: translateY(-600px) rotate(360deg) scale(1.2);
-    }
-	100% {
-        -moz-transform: translateY(-1200px) rotate(720deg) scale(0.8);
-	}
+  0% {
+    -moz-transform: translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    -moz-transform: translateY(-600px) rotate(360deg) scale(1.2);
+  }
+  100% {
+    -moz-transform: translateY(-1200px) rotate(720deg) scale(0.8);
+  }
 }

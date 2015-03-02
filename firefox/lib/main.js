@@ -176,7 +176,8 @@ function setupCanvaspagemod() {
       'background_url': sdk.selfMod.data.url('dialog_background_alternate.png'),
       'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
       'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-      'swagger_css': sdk.selfMod.data.url('swagger.css')
+      'swagger_css': sdk.selfMod.data.url('swagger.css'),
+      'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png')]
     },
     onAttach: _onAttach
   });
