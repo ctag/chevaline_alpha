@@ -52,7 +52,9 @@ function addConversationsFromId(_array, _callback) {
   for (var i = 0; i < _array.length; i++) {
     crapi.GetOneConversation(_array[i], insertIntoIndex);
   }
-  _callback();
+  if (typeof(_callback) !== 'undefined') {
+    _callback();
+  }
 }
 
 // Gets the 10 latest conversations and updates the index with them

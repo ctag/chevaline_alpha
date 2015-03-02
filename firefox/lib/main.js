@@ -175,7 +175,8 @@ function setupCanvaspagemod() {
     contentScriptOptions: {
       'background_url': sdk.selfMod.data.url('dialog_background_alternate.png'),
       'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-      'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+      'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
+      'swagger_css': sdk.selfMod.data.url('swagger.css')
     },
     onAttach: _onAttach
   });

@@ -6,11 +6,11 @@
  * Setup
  */
 
-/*
+
 var debug = self.options.debug;
 var cleanupPage = self.options.cleanup_page;
 var extendSession = self.options.extend_session;
-*/
+var mod = new Object();
 
 /*
  * Functions
@@ -23,6 +23,14 @@ function do_cleanupPage () {
   $("meta:contains('google-play-app')").remove();
   // Get rid of the javascript banner.
   $("noscript:contains('You need to have JavaScript')").remove();
+}
+
+function do_injectCSS () {
+  mod.theme_css = '<link href="' + self.options.jquery_ui_theme_css + '" rel="stylesheet" type="text/css">';
+  //$('head').append(mod.theme_css);
+
+  mod.ui_css = '<link href="' + self.options.jquery_ui_css + '" rel="stylesheet" type="text/css">';
+  $('head').append(mod.ui_css);
 }
 
 // From what we know:
@@ -78,10 +86,11 @@ function do_request() {
  * Execution
  */
 $(document).ready(function () {
-  /*
   if (cleanupPage) {
-    do_cleanupPage;
+    do_cleanupPage();
   }
+  do_injectCSS();
+  /*
   if (extendSession) {
     // Set query for every 15 minutes
     var timer = window.setInterval(do_request, 900000);
