@@ -158,7 +158,7 @@ and see for yourself that it does not pose a substantial threat to your account\
 </style>';
 
   mod.dialog = ' \
-<div id="chevaline_dialog" class="box fl-panel chevaline"> \
+<div id="chevaline_dialog" class="chevaline-ui box fl-panel chevaline"> \
 <h3 style="text-align: center;">Chevaline Alpha - SSO Aide</h3> \
 <hr> \
 <center> \

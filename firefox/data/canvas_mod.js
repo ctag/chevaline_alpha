@@ -29,7 +29,7 @@ function do_injectCSS () {
   //$('head').append(mod.theme_css);
 
   mod.ui_css = '<link href="' + self.options.jquery_ui_css + '" rel="stylesheet" type="text/css">';
-  $('head').append(mod.ui_css);
+  //$('head').append(mod.ui_css);
 }
 
 // From what we know:

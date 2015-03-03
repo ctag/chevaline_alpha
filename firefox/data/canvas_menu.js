@@ -2,7 +2,7 @@
 
 var debug = self.options.debug;
 
-var menuDialog = '<div id="chevaline_menu_dialog" title="Chevaline Alpha Menu" style="display: none;">\
+var menuDialog = '<div id="chevaline_menu_dialog" title="Chevaline Alpha Menu">\
 <button id="charger_swag_btn">Display Your Charger Pride</button> \
 </div>';
 
@@ -24,6 +24,7 @@ function addMenu(_callback) {
     draggable: true,
     hide: 200,
     show: 200,
+    dialogClass: "chevaline-ui",
     modal: false,
     position: {my: "right top-20", at: "right top", of: window}
   });
@@ -39,7 +40,8 @@ $(document).ready(function() {
     swagBtn.button();
 
     menu.click(function () {
-      menuDialog.dialog("open");
+      menuDialog.dialog("open").css('z-index', 200);
+      $('.chevaline-ui').css('z-index', 200); // You know what's absolutely disgusting? This.
     });
 
     swagBtn.click(function () {
