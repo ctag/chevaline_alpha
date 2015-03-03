@@ -153,6 +153,10 @@ function setupCanvaspagemod() {
     console.log("attaching to canvas");
     lunr.Update();
 
+    worker.port.on('return_chargerPrideClick', function () {
+      worker.port.emit('send_chargerPrideClick'); // Well, this is bullshit..
+    });
+
     worker.port.on('request_search', function(_search) {
       console.log("searching for: ", _search);
       lunr.Search(_search, function(_results) {
@@ -183,7 +187,7 @@ function setupCanvaspagemod() {
       'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'), /* Only used by canvas_mod.js */
       'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'), /* Only used by canvas_mod.js */
       'swagger_css': sdk.selfMod.data.url('charger_pride.css'),
-      'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png'),sdk.selfMod.data.url('swag/swag_06.png'),sdk.selfMod.data.url('swag/swag_07.png')]
+      'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png'),sdk.selfMod.data.url('swag/swag_06.png'),sdk.selfMod.data.url('swag/swag_07.png'),sdk.selfMod.data.url('swag/swag_snoop.gif'),sdk.selfMod.data.url('swag/swag_kfc.gif')]
     },
     onAttach: _onAttach
   });

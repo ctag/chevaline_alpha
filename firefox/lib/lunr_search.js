@@ -31,7 +31,7 @@ var searchIndex = lunr(function() {
  */
 
 function insertIntoIndex(_data) {
-  console.log("\n\ninserting: ", _data);
+  if (sdk.prefs['debug']) console.log("\n\ninserting: ", _data);
   var _body = '';
   for (var i2 = 0; i2 < _data.messages.length; i2++) {
     _body += _data.messages[i2].body;
