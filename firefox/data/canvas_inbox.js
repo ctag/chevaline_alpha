@@ -6,7 +6,7 @@
  * - Starred Conversation Highlighting
  */
 
-console.log('running canvas_inbox_mod.js');
+console.log('running canvas_inbox.js');
 
 var conversations; // Holds jquery elements for search results. Hacky.
 var debug = self.options.debug;

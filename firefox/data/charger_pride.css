@@ -1,6 +1,6 @@
 /* ==========================================================================
    So much swagger, it hurts (...slow CPUs!)
-   CSS adopted from aokp.co
+   CSS adapted from aokp.co for Chevaline Alpha
    ========================================================================== */
 
 #header {
@@ -17,7 +17,7 @@
   z-index: 11 !important;
 }
 .charger-pulse {
-  background: #E4418B;
+  //background: #E4418B;
   -moz-animation: phasepulse 6s ease-in-out infinite;
 }
 #pinkglow {
@@ -83,7 +83,7 @@
     background-color: #F0F0F0;
   }
 }
-@-moz-keyframes moveswag {
+@-moz-keyframes moveswag1 {
   0% {
     -moz-transform: translateY(200px) rotate(0deg) scale(0.5);
     opacity: 1.0;
@@ -111,7 +111,7 @@
     -moz-transform: translateY(-1200px) rotate(-720deg) scale(0.2);
   }
 }
-@-moz-keyframes moveswagfedora {
+@-moz-keyframes moveswag3 {
   0% {
     -moz-transform: translateY(0) rotate(0deg) scale(1);
   }

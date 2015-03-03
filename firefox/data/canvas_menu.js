@@ -1,6 +1,5 @@
 // Adds menu items
 
-
 var debug = self.options.debug;
 
 var menuDialog = '<div id="chevaline_menu_dialog" title="Chevaline Alpha Menu" style="display: none;">\
@@ -34,15 +33,14 @@ function addMenu(_callback) {
 }
 
 function generateSwagElems(_callback) {
-  var num_elems = 12;
-  var swag_elems = '';
-  var ani_opts = ['moveswagfedora', 'moveswag', 'moveswag2'];
+  var num_elems = 20; // Number of elements to display on page
+  var swag_elems = ''; // Leave blank, is filled later.
   for (var index = 0; index < num_elems; index++) {
-    var rand_ani = Math.floor(Math.random() * ani_opts.length);
+    var rand_ani = Math.floor(Math.random() * 2)+1; // Number of animation css rules (minus 1). Format: moveswag##
     var rand_time = Math.floor(Math.random() * 15)+5; // max time of 20s for scroll
     var left_pos = Math.floor(Math.random() * 98)+1; // percent of screen
     var rand_img = Math.floor(Math.random() * self.options.swagger_imgs.length); // random image
-    var elem = '<div class="swag-element" style="-moz-animation: '+ani_opts[rand_ani]+' '+rand_time+'s linear infinite; left: '+left_pos+'%;">';
+    var elem = '<div class="swag-element" style="-moz-animation: moveswag'+rand_ani+' '+rand_time+'s linear infinite; left: '+left_pos+'%;">';
     elem += '<img class="swag-img" src="'+self.options.swagger_imgs[rand_img]+'"/></div>';
     swag_elems += elem;
   }

@@ -171,13 +171,19 @@ function setupCanvaspagemod() {
   canvasPageMod = sdk.pageMod.PageMod({
     include: 'https://uah.instructure.com/*',
     contentScriptWhen: 'end',
-    contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_mod.js"), sdk.selfMod.data.url('canvas_menu.js')],
+    contentScriptFile: [
+      sdk.selfMod.data.url("jquery-2.1.3.min.js"),
+      sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'),
+      sdk.selfMod.data.url("canvas_mod.js"),
+      sdk.selfMod.data.url('canvas_menu.js'),
+      sdk.selfMod.data.url('charger_pride.js')
+      ],
     contentScriptOptions: {
       'background_url': sdk.selfMod.data.url('dialog_background_alternate.png'),
-      'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-      'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-      'swagger_css': sdk.selfMod.data.url('swagger.css'),
-      'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png')]
+      'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'), /* Only used by canvas_mod.js */
+      'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'), /* Only used by canvas_mod.js */
+      'swagger_css': sdk.selfMod.data.url('charger_pride.css'),
+      'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png'),sdk.selfMod.data.url('swag/swag_06.png'),sdk.selfMod.data.url('swag/swag_07.png')]
     },
     onAttach: _onAttach
   });
@@ -185,11 +191,13 @@ function setupCanvaspagemod() {
   sdk.pageMod.PageMod({
     include: /.*uah\.instructure.*conversations.*/,
     contentScriptWhen: 'start',
-    contentScriptFile: [sdk.selfMod.data.url("jquery-2.1.3.min.js"), sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'), sdk.selfMod.data.url("canvas_inbox_mod.js")],
+    contentScriptFile: [
+      sdk.selfMod.data.url("jquery-2.1.3.min.js"),
+      sdk.selfMod.data.url('jquery-ui/jquery-ui.min.js'),
+      sdk.selfMod.data.url("canvas_inbox.js")
+      ],
     contentScriptOptions: {
-      'background_url': sdk.selfMod.data.url('dialog_background_alternate.png'),
-      'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
-      'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css')
+      'background_url': sdk.selfMod.data.url('dialog_background_alternate.png')
     },
     onAttach: _onAttach
   });

@@ -6,7 +6,6 @@
  * Setup
  */
 
-
 var debug = self.options.debug;
 var cleanupPage = self.options.cleanup_page;
 var extendSession = self.options.extend_session;
@@ -36,51 +35,7 @@ function do_injectCSS () {
 // From what we know:
 // There is a 10 hour hard cap for session life
 // There is a 2 hour inactivity cap which is not extended with ajax requests
-// There is a bug which provokes varied <2hr logouts against the user's wishes
-
-function printResponse(e) {
-  console.log(this, e);
-}
-
-function do_request() {
-  //console.log("running timer.");
-
-  var token = 'Bearer <token>';
-
-  var http_request = new XMLHttpRequest();
-  http_request.onload = printResponse;
-  http_request.open('POST', 'https://canvas.instructure.com/api/v1/courses', false);
-  http_request.setRequestHeader("Authorization", token);
-  http_request.send();
-  console.log(http_request.responseText);
-
-  console.log("making request " + token);
-  var results = $.ajax({
-    type: "GET",
-    url: "https://canvas.instructure.com/api/v1/courses?access_token=<token>",
-    /*beforeSend: function (xhr) {
-      xhr.setRequestHeader("Authorization", token);
-    },*/
-    dataType: 'jsonp',
-    success: function (response) {
-      console.log("successfdsfds: ", response);
-    }
-  }).done( function (some) {
-    console.log("done: ", some);
-  });
-
-  console.log("after: ", results.getResponseHeader);
-
-  /*
-  $.get('https://uah.instructure.com/dashboard-sidebar', function (_data) {
-    //console.log("get: ", _data);
-  });
-
-  $.post('https://uah.instructure.com/dashboard-sidebar', function (_data) {
-    //console.log("post: ", _data);
-  });
-  */
-}
+// There is a bug which provokes varied <2hr logout events
 
 /*
  * Execution
@@ -90,11 +45,4 @@ $(document).ready(function () {
     do_cleanupPage();
   }
   do_injectCSS();
-  /*
-  if (extendSession) {
-    // Set query for every 15 minutes
-    var timer = window.setInterval(do_request, 900000);
-  }
-  */
-  //do_request();
 }); // end document.ready()
