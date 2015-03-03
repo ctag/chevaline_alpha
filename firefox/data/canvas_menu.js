@@ -64,7 +64,7 @@ function addSwagger () {
 }
 
 function toggleSwag () {
-  $('#charger-swagger').fadeToggle(500);
+  $('#charger-swagger').fadeToggle(500).toggleClass('charger-swagger-visible');
   //$('#pinkglow').toggle();
   $('body').toggleClass('charger-pulse');
   $('#main').toggleClass('charger-pulse');

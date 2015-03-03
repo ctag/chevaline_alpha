@@ -8,10 +8,13 @@
 }
 #charger-swagger {
   position: fixed;
-  z-index: 11;
+  z-index: -1;
   height: 100%;
   width: 100%;
   display: none;
+}
+.charger-swagger-visible {
+  z-index: 11 !important;
 }
 .charger-pulse {
   background: #E4418B;
@@ -26,6 +29,7 @@
   -moz-animation: phaseglow 8s ease-in-out infinite;
 }
 .swag-element {
+  z-index: 11;
   display: block;
   position: absolute;
   bottom: 0;

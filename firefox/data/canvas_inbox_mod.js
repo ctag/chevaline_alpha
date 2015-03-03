@@ -9,7 +9,7 @@
 console.log('running canvas_inbox_mod.js');
 
 var conversations; // Holds jquery elements for search results. Hacky.
-
+var debug = self.options.debug;
 var message_list;
 var highlight_timer_id = 0;
 
@@ -67,7 +67,7 @@ $(document).ready( function () {
   $('#search-autocomplete').css('width', (width+55)+"px").append(test);
 
   self.port.on('send_searchResults', function (_results) {
-    if (sdk.prefs['debug']) console.log("received results: ", _results);
+    if (debug) console.log("received results: ", _results);
     conversations.has("h3.subject:contains('" + _results + "')").addClass('chevaline_search_result').css('display', 'list-item');
   })
 
