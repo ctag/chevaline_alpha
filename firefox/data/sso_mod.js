@@ -32,7 +32,6 @@ function create_buttons() {
 }
 
 function set_buttons() {
-  //mod.buttonEnable.button();
   var _text = "Automatic Login ";
   if (ssoEnabled) {
     _text += "Enabled";
@@ -49,8 +48,7 @@ function login(username, password) {
     return; // Don't try logging in if there's an auth failure.
   }
   if (html.inputUsername.val() && html.inputPassword.val()) {
-    //$('.btn-submit').click();
-    console.log("click!");
+    $('.btn-submit').click();
   }
 }
 

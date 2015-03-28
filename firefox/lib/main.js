@@ -240,7 +240,7 @@ function setupSSOpagemod() {
       sso.GetCredentials(_sendCredential);
     });
     if (sdk.prefs['canvas_api_token']) {
-      //lunr.Update();
+      lunr.Update();
     }
   }
   ssoPageMod = sdk.pageMod.PageMod({
