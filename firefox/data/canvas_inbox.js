@@ -79,6 +79,7 @@ $(document).ready( function () {
 
   test.click(function () {
     var search = $('input#compose-message-recipients').val();
+    if (debug) console.log("Requesting a fulltext search for '"+search+"'.");
     self.port.emit('request_search', search);
   });
 });

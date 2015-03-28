@@ -134,7 +134,7 @@ $(document).ready(function() {
   mod.css = '<style> \
 .chevaline { \
   font-family: "Lucida Console", Monaco, monospace; \
-  font-size: 16px; \
+  font-size: 14px; \
 } \
 #chevaline_dialog { \
   padding: ' + mod.padding + 'px; \

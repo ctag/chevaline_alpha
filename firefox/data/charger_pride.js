@@ -1,13 +1,12 @@
 // Elements to display floating items
 
 function generateSwagElems(_callback) {
-  var num_elems = 30; // Number of elements to display on page
   var swag_elems = ''; // Leave blank, is filled later.
-  for (var index = 0; index < num_elems; index++) {
+  for (var index = 0; index < self.options.swagger_count; index++) {
     var rand_ani = Math.floor(Math.random() * 2)+1; // Number of animation css rules (minus 1). Format: moveswag##
     var rand_time = Math.floor(Math.random() * 25)+10; // max time of 20s for scroll
     var left_pos = Math.floor(Math.random() * 98)+1; // percent of screen
-    var rand_img = Math.floor(Math.random() * (self.options.swagger_imgs.length)); // random image up to the last two
+    var rand_img = Math.floor(Math.random() * (self.options.swagger_imgs.length-1)); // random image
     var elem = '<div class="swag-element" style="-moz-animation: moveswag'+rand_ani+' '+rand_time+'s linear infinite; left: '+left_pos+'%;">';
     elem += '<img class="swag-img" src="'+self.options.swagger_imgs[rand_img]+'"/></div>';
     swag_elems += elem;
