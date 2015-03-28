@@ -13,8 +13,6 @@ var ssoTimer = false;
 var html = new Object(); // Associate elements already on page
 var mod = new Object(); // Associate elements created by this js
 
-if (debug) console.log("sso_mod.js loading.");
-
 /*
  * Functions
  */
@@ -51,7 +49,8 @@ function login(username, password) {
     return; // Don't try logging in if there's an auth failure.
   }
   if (html.inputUsername.val() && html.inputPassword.val()) {
-    $('.btn-submit').click();
+    //$('.btn-submit').click();
+    console.log("click!");
   }
 }
 
@@ -68,12 +67,22 @@ function countdown(_period) {
   }
 }
 
+function set_timer() {
+  if (debug) console.log("Setting login timer to "+ssoEnabled+".");
+  if (ssoEnabled && (typeof(ssoTimer) === 'boolean')) {
+    ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
+  } else if (!ssoEnabled) {
+    window.clearInterval(ssoTimer);
+  }
+}
+
 /*
  * Ports
  */
 
 self.port.on('send_ssoEnabled', function(_enabled) {
   ssoEnabled = _enabled;
+  set_timer();
   set_buttons();
 });
 
@@ -94,37 +103,22 @@ self.port.on('send_ssoCredential', function(_credential) {
   }
 })
 
-if (ssoEnabled && (!$('.errors')[0])) {
-  if (debug) console.log("requesting credential from main.js");
-  self.port.emit('request_ssoCredential');
-}
-
 /*
  * Execution
  */
+
 $(document).ready(function() {
+  if (debug) console.log("sso_mod.js loading.");
+  if (debug) console.log("sso_enabled is set to [" + ssoEnabled + "].");
 
-  if (ssoEnabled && !debug) {
-    ssoTimer = window.setInterval(countdown, ssoTimeoutPeriod);
+  if (ssoEnabled && (!$('.errors')[0])) {
+    if (debug) console.log("Requesting credential from main.js.");
+    self.port.emit('request_ssoCredential');
   }
-
-  html.uselessWarning = $('img[src$="images/warning-icon.png"]').parent();
-  html.uselessWarning.html("");
-
-  html.uselessQuestion = $("p:contains('What is Single-Sign on')");
-  html.uselessQuestion.html("Why does this page look different?");
-
-  html.uselessDescription = $("p:contains('centralized, easy-to-use login system')");
-  html.uselessDescription.html('Chevaline Alpha is running a content-script on this login page in order to aid \
-you logging in. Rather than make empty promises, we encourage you to browse the \
-<a href="http://berocs.com">source code</a> to the plugin \
-and see for yourself that it does not pose a substantial threat to your account\'s security.');
 
   html.body = $('body');
   html.login = $('#login');
   html.loginPos = html.login.offset();
-  html.loginWidth = html.login.width();
-  html.loginHeight = html.login.height();
   html.inputUsername = $('#username');
   html.inputPassword = $('#password');
 
@@ -136,8 +130,8 @@ and see for yourself that it does not pose a substantial threat to your account\
   mod.pos.left = html.loginPos.left + 350;
   mod.pos.top = html.loginPos.top;
   mod.borderWidth = 2;
-  mod.width = (html.loginWidth - (mod.padding * 2) - (mod.borderWidth * 2));
-  mod.height = (html.loginHeight - (mod.padding * 2) - (mod.borderWidth * 2));
+  mod.width = 300;
+  mod.height = 300;
 
   mod.css = '<style> \
 .chevaline { \
@@ -153,7 +147,7 @@ and see for yourself that it does not pose a substantial threat to your account\
   left: ' + mod.pos.left + 'px; \
   top: ' + mod.pos.top + 'px; \
   color: #E0E0FF; \
-  border: ' + mod.borderWidth + 'px solid #353590; \
+  border: ' + mod.borderWidth + 'px solid #0005b6; \
 } \
 </style>';
 
@@ -167,7 +161,7 @@ Configuration options \
 <input type="checkbox" id="chevaline_autologin_enable"><label id="chevaline_autologin_enable_label" for="chevaline_autologin_enable">Enable Automatic Login</label> \
 <br> \
 <br> \
-<a href="https://github.com/ctag/chevaline_alpha" target="_blank" id="chevaline_button_docs">omg, wat do?</a> \
+<a href="https://github.com/ctag/chevaline_alpha" target="_blank" id="chevaline_button_docs">chevaline? wat do?</a> \
 <div id="chevaline_timer"> \
 </div> \
 </center></div>';

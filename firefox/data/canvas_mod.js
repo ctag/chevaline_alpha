@@ -25,6 +25,10 @@ function do_cleanupPage () {
 }
 
 function do_injectCSS () {
+  /*
+   * Canvas uses a jQuery-UI CSS file littered with '!important' as though they've never heard of scoping before.
+   * So... Fuck.
+   */
   mod.theme_css = '<link href="' + self.options.jquery_ui_theme_css + '" rel="stylesheet" type="text/css">';
   //$('head').append(mod.theme_css);
 

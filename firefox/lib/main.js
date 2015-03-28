@@ -58,9 +58,16 @@ menuitem.Menuitem({
 });
 */
 
+sdk.simplePrefs.on('sso_enabled', preferenceChanged);
+
 /*
  * Methods
  */
+
+function preferenceChanged() {
+  if (sdk.prefs['debug']) console.log("Resetting page mods due to simplePref change.");
+  runPageMods();
+}
 
 function getCourses() {
   if (sdk.prefs['debug']) {
@@ -148,6 +155,12 @@ function traverseIndex() {
   }
 }
 
+function runPageMods() {
+  if (sdk.prefs['debug']) console.log("Setting page mods.");
+  setupSSOpagemod();
+  setupCanvaspagemod();
+}
+
 function setupCanvaspagemod() {
   function _onAttach(worker) {
     console.log("attaching to canvas");
@@ -227,7 +240,7 @@ function setupSSOpagemod() {
       sso.GetCredentials(_sendCredential);
     });
     if (sdk.prefs['canvas_api_token']) {
-      lunr.Update();
+      //lunr.Update();
     }
   }
   ssoPageMod = sdk.pageMod.PageMod({
@@ -278,6 +291,5 @@ if (sdk.ss.courses && sdk.ss.courseIndex) {
  * Execution
  */
 
-setupSSOpagemod();
-setupCanvaspagemod();
+runPageMods();
 lunr.Initialize();

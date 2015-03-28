@@ -15,7 +15,7 @@
   },
   "preferences": [{
 		"name": "crn_enabled",
-		"title": "Enable Automatic Login for UAH CAS? Only works if you've stored your CAS credentials in the firefox password manager.",
+		"title": "Enable CRN handler?",
 		"type": "bool",
 		"value": false
   },{
@@ -51,7 +51,7 @@
 		"value": ""
   },{
 		"name": "debug",
-		"title": "Enable debugging? Side effect: disables autologin.",
+		"title": "Enable debugging?",
 		"type": "bool",
 		"value": false
   }
