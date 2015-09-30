@@ -160,7 +160,7 @@ function traverseIndex() {
 function runPageMods() {
   if (sdk.prefs.debug) console.log("Setting page mods.");
   setupSSOpagemod();
-  setupCanvaspagemod();
+  //setupCanvaspagemod();
 }
 
 function setupCanvaspagemod() {
@@ -292,4 +292,4 @@ if (sdk.ss.courses && sdk.ss.courseIndex) {
 }
 
 runPageMods();
-lunr.Initialize();
+//lunr.Initialize();
