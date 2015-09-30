@@ -6,6 +6,8 @@
  * - Starred Conversation Highlighting
  */
 
+/*jshint multistr: true */
+
 console.log('running canvas_inbox.js');
 
 var conversations; // Holds jquery elements for search results. Hacky.
@@ -69,7 +71,7 @@ $(document).ready( function () {
   self.port.on('send_searchResults', function (_results) {
     if (debug) console.log("received results: ", _results);
     conversations.has("h3.subject:contains('" + _results + "')").addClass('chevaline_search_result').css('display', 'list-item');
-  })
+  });
 
   self.port.on('send_searchBegin', function () {
     conversations = $('ul.messages li');

@@ -2,7 +2,7 @@
 
 var debug = false;
 
-var ssoForm = new Object();
+var ssoForm = {};
 ssoForm.submit = $('#sso_form_submit');
 //ssoForm.user = $('#sso_form_user');
 ssoForm.pass = $('#sso_form_pass');
@@ -27,4 +27,3 @@ $('#do_test_getCredentials').click(function () {
 $('#do_test_rmCredentials').click(function () {
   //self.port.emit('test_rmCredentials');
 });
-

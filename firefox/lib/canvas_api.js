@@ -4,12 +4,12 @@
  * Setup
  */
 
-var sdk = new Object();
+var sdk = {};
 sdk.request = require("sdk/request").Request;
 sdk.prefs = require('sdk/simple-prefs').prefs;
 //sdk.ss = require('sdk/simple-storage');
 
-var crapi = new Object(); // canvas-api
+var crapi = {}; // canvas-api
 crapi.rootURL = 'https://uah.instructure.com';
 
 function api_handleError (_url, _response) {
@@ -28,7 +28,7 @@ function api_handleError (_url, _response) {
 
 function api_getJSON (_api, _callback, _opts) {
   // This works, POST does not.
-  _url = crapi.rootURL + _api + '?access_token=' + sdk.prefs['canvas_api_token'];
+  _url = crapi.rootURL + _api + '?access_token=' + sdk.prefs.canvas_api_token;
   sdk.request({
     url: _url,
     content: _opts,
@@ -51,7 +51,7 @@ function api_getAllConversationIds(_callback) {
   _apiURL = '/api/v1/conversations';
   _content = {
     "include_all_conversation_ids": "true"
-  }
+  };
   function _return (_result) {
     //console.log("results: ", _result);
     _callback(_result.conversation_ids);

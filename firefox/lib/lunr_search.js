@@ -7,7 +7,7 @@
  * Setup
  */
 
-var sdk = new Object();
+var sdk = {};
 sdk.request = require("sdk/request").Request;
 sdk.prefs = require('sdk/simple-prefs').prefs;
 sdk.ss = require('sdk/simple-storage');
@@ -27,11 +27,11 @@ var searchIndex = lunr(function() {
 });
 
 /*
- * Methods
+ * Methods;
  */
 
 function insertIntoIndex(_data) {
-  if (sdk.prefs['debug']) console.log("\n\ninserting: ", _data);
+  if (sdk.prefs.debug) console.log("\n\ninserting: ", _data);
   var _body = '';
   for (var i2 = 0; i2 < _data.messages.length; i2++) {
     _body += _data.messages[i2].body;
@@ -46,7 +46,7 @@ function insertIntoIndex(_data) {
 
 function addConversationsFromId(_array, _callback) {
   if (typeof(_array) == 'undefined') {
-    if (sdk.prefs['debug']) console.log('Tried to insert empty array to search index. Aborting.');
+    if (sdk.prefs.debug) console.log('Tried to insert empty array to search index. Aborting.');
     return;
   }
   for (var i = 0; i < _array.length; i++) {
@@ -68,7 +68,7 @@ function updateIndex() {
 
 function doBackup() {
   sdk.ss.storage.searchIndex = searchIndex.toJSON();
-  if (sdk.prefs['debug']) console.log('Generated search index backup: ', sdk.ss.storage.searchIndex);
+  if (sdk.prefs.debug) console.log('Generated search index backup: ', sdk.ss.storage.searchIndex);
 }
 
 // Setup the index with all messages
@@ -76,7 +76,7 @@ function doInitialize() {
   delete sdk.ss.storage.searchIndex;
   if (typeof(sdk.ss.storage.searchIndex) != 'undefined') {
     // Previous index is available.
-    if (sdk.prefs['debug']) console.log('\n\nRestoring search index from backup.', sdk.ss.storage.searchIndex);
+    if (sdk.prefs.debug) console.log('\n\nRestoring search index from backup.', sdk.ss.storage.searchIndex);
     searchIndex = lunr.Index.load(sdk.ss.storage.searchIndex);
     return;
   }
@@ -86,7 +86,7 @@ function doInitialize() {
 
 // Run a query against the searchIndex
 function doSearch(_text, _callback) {
-  if (sdk.prefs['debug']) console.log("\n\nSearch results: ", searchIndex.search(_text));
+  if (sdk.prefs.debug) console.log("\n\nSearch results: ", searchIndex.search(_text));
   _callback(searchIndex.search(_text));
 }
 

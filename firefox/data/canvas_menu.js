@@ -1,5 +1,7 @@
 // Adds menu items
 
+/*jshint multistr: true */
+
 var debug = self.options.debug;
 
 var menuDialog = '<div id="chevaline_menu_dialog" title="Chevaline Alpha Menu">\

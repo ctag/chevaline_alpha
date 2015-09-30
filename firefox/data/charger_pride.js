@@ -1,5 +1,7 @@
 // Elements to display floating items
 
+/*jshint multistr: true */
+
 function generateSwagElems(_callback) {
   var swag_elems = ''; // Leave blank, is filled later.
   for (var index = 0; index < self.options.swagger_count; index++) {

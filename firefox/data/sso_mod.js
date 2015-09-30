@@ -1,5 +1,7 @@
 // The *real* Single Sign On
 
+/*jshint multistr: true */
+
 /*
  * Setup
  */
@@ -10,8 +12,8 @@ var ssoEnabled = self.options.sso_enabled;
 var ssoTimeout = self.options.sso_timeout;
 var ssoTimeoutPeriod = 200;
 var ssoTimer = false;
-var html = new Object(); // Associate elements already on page
-var mod = new Object(); // Associate elements created by this js
+var html = {}; // Associate elements already on page
+var mod = {}; // Associate elements created by this js
 
 /*
  * Functions
@@ -99,7 +101,7 @@ self.port.on('send_ssoCredential', function(_credential) {
   if (_credential.password) {
     html.inputPassword.val(_credential.password);
   }
-})
+});
 
 /*
  * Execution
@@ -124,7 +126,7 @@ $(document).ready(function() {
   html.inputPassword.attr('autocomplete', 'on');
 
   mod.padding = 15;
-  mod.pos = new Object();
+  mod.pos = {};
   mod.pos.left = html.loginPos.left + 350;
   mod.pos.top = html.loginPos.top;
   mod.borderWidth = 2;

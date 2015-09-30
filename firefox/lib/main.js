@@ -6,11 +6,13 @@
  * I hope you find it utilitous!
  */
 
+/* jshint esnext: true */
+
 /*
  * SDK tools
  */
 
-var sdk = new Object();
+var sdk = {};
 sdk.tabs = require("sdk/tabs");
 sdk.pageMod = require("sdk/page-mod");
 sdk.selfMod = require("sdk/self");
@@ -39,8 +41,8 @@ const {
  * Global Vars
  */
 
-var year = sdk.prefs['crn_year'];
-var semester = sdk.prefs['crn_semester'];
+var year = sdk.prefs.crn_year;
+var semester = sdk.prefs.crn_semester;
 
 /*
  * Items in browser's alt menus
@@ -65,12 +67,12 @@ sdk.simplePrefs.on('sso_enabled', preferenceChanged);
  */
 
 function preferenceChanged() {
-  if (sdk.prefs['debug']) console.log("Resetting page mods due to simplePref change.");
+  if (sdk.prefs.debug) console.log("Resetting page mods due to simplePref change.");
   runPageMods();
 }
 
 function getCourses() {
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.time("getCourses");
     console.log("getCourses(): sending berocs.com request.");
   }
@@ -79,9 +81,9 @@ function getCourses() {
     onComplete: function saveCoursesData(result) {
       console.log("berocs.com result: ", result);
       sdk.ss.courses = result.json;
-      if (sdk.prefs['debug']) console.log("sdk.ss.courses: ", sdk.ss.courses);
+      if (sdk.prefs.debug) console.log("sdk.ss.courses: ", sdk.ss.courses);
       makeIndex();
-      if (sdk.prefs['debug']) {
+      if (sdk.prefs.debug) {
         console.timeEnd("getCourses");
       }
     }
@@ -89,19 +91,19 @@ function getCourses() {
 }
 
 function makeIndex() {
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.time('makeIndex');
     console.log('makeIndex(): generating index.');
   }
 
   if (!sdk.ss.courses) {
-    if (sdk.prefs['debug']) console.log('sdk.ss.courses not found, aborting makeIndex().');
+    if (sdk.prefs.debug) console.log('sdk.ss.courses not found, aborting makeIndex().');
     return;
   }
 
   sdk.ss.coursesIndex = {};
   sdk.ss.coursesTimeStamp = sdk.ss.courses[0][0];
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.log("sdk.ss.courses generated on: ", sdk.ss.coursesTimeStamp);
   }
 
@@ -123,20 +125,20 @@ function makeIndex() {
     }
 
   }
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.log("makeIndex(): index created: ", sdk.ss.coursesIndex);
     console.timeEnd('makeIndex');
   }
 }
 
 function traverseIndex() {
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.time('traverseIndex');
     console.log('traverseIndex(): printing the index.');
   }
 
   if (!sdk.ss.courses) {
-    if (sdk.prefs['debug']) {
+    if (sdk.prefs.debug) {
       console.log("traverseIndex(): sdk.ss.courses missing, aborting function");
     }
     return;
@@ -144,19 +146,19 @@ function traverseIndex() {
 
   for (var x = 1; x < sdk.ss.courses.length; x++) {
     for (var y = 1; y < sdk.ss.courses[x].length; y++) {
-      if (sdk.prefs['debug']) {
+      if (sdk.prefs.debug) {
         console.log('course: ', sdk.ss.coursesIndex[x][y]);
       }
     }
   }
 
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.timeEnd('traverseIndex');
   }
 }
 
 function runPageMods() {
-  if (sdk.prefs['debug']) console.log("Setting page mods.");
+  if (sdk.prefs.debug) console.log("Setting page mods.");
   setupSSOpagemod();
   setupCanvaspagemod();
 }
@@ -202,7 +204,7 @@ function setupCanvaspagemod() {
       'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'), /* Only used by canvas_mod.js */
       'swagger_css': sdk.selfMod.data.url('charger_pride.css'),
       'swagger_imgs': [sdk.selfMod.data.url('swag/swag_01.png'),sdk.selfMod.data.url('swag/swag_02.png'),sdk.selfMod.data.url('swag/swag_03.png'),sdk.selfMod.data.url('swag/swag_04.png'),sdk.selfMod.data.url('swag/swag_05.png'),sdk.selfMod.data.url('swag/swag_06.png'),sdk.selfMod.data.url('swag/swag_07.png'),sdk.selfMod.data.url('swag/swag_snoop.gif')],
-      'swagger_count': sdk.prefs['swagger_count']
+      'swagger_count': sdk.prefs.swagger_count
     },
     onAttach: _onAttach
   });
@@ -225,23 +227,23 @@ function setupCanvaspagemod() {
 function setupSSOpagemod() {
   function _onAttach(worker) {
     worker.port.on('request_ssoEnabled', function() {
-      worker.port.emit('send_ssoEnabled', sdk.prefs['sso_enabled']);
+      worker.port.emit('send_ssoEnabled', sdk.prefs.sso_enabled);
     });
 
     worker.port.on('return_ssoEnabled', function(_enabled) {
-      if (sdk.prefs['debug']) console.log("main.js: updating sso_enabled simplePref, ", _enabled);
+      if (sdk.prefs.debug) console.log("main.js: updating sso_enabled simplePref, ", _enabled);
       sdk.prefs.sso_enabled = _enabled;
-      if (sdk.prefs['debug']) console.log("main.js: new simplePrefs sso_enabled, ", sdk.prefs.sso_enabled);
+      if (sdk.prefs.debug) console.log("main.js: new simplePrefs sso_enabled, ", sdk.prefs.sso_enabled);
     });
 
     worker.port.on('request_ssoCredential', function() {
       function _sendCredential(_cred) {
-        if (sdk.prefs['debug']) console.log("credentials: ", _cred);
+        if (sdk.prefs.debug) console.log("credentials: ", _cred);
         worker.port.emit('send_ssoCredential', _cred[0]);
       }
       sso.GetCredentials(_sendCredential);
     });
-    if (sdk.prefs['canvas_api_token']) {
+    if (sdk.prefs.canvas_api_token) {
       lunr.Update();
     }
   }
@@ -254,9 +256,9 @@ function setupSSOpagemod() {
       'background_url': sdk.selfMod.data.url('dialog_background_alternate.png'),
       'jquery_ui_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.min.css'),
       'jquery_ui_theme_css': sdk.selfMod.data.url('jquery-ui/jquery-ui.theme.min.css'),
-      'sso_enabled': sdk.prefs['sso_enabled'],
+      'sso_enabled': sdk.prefs.sso_enabled,
       'sso_timeout': 1000,
-      'debug': sdk.prefs['debug']
+      'debug': sdk.prefs.debug
     },
     onAttach: _onAttach
   });
@@ -267,15 +269,15 @@ function setupSSOpagemod() {
  */
 
 if (!sdk.ss.courses) {
-  if (sdk.prefs['debug']) {
+  if (sdk.prefs.debug) {
     console.log("Large course object not found, fetching new courses.json");
   }
   //getCourses();
-} else if (sdk.prefs['debug']) {
+} else if (sdk.prefs.debug) {
   console.log('sdk.ss.courses found: ', sdk.ss.courses);
 }
 
-if (sdk.prefs['debug']) {
+if (sdk.prefs.debug) {
   sdk.tabs.open("about:addons");
   sdk.tabs.open("http://canvas.uah.edu");
   //sdk.tabs.open("http://catalog.uah.edu/content.php?catoid=11&navoid=212");

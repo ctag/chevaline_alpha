@@ -30,7 +30,7 @@ var temp_html = page.html();
 do {
 var mydata = myregex.exec(page_text);
 
-if (mydata == null)
+if (mydata === null)
 {
 	break;
 }
@@ -51,23 +51,20 @@ for (var c = 0; c < courses.length; c++)
 			if ((courses[c][0] + " " + courses[c][i].course_num) == mydata)
 			{
 				console.log("Found a match: " + (courses[c][0] + " " + courses[c][i].course_num + " " + courses[c][i].course_sec));
-				
+
 				temp_html = temp_html.replace(mydata, '<strong><div style="background: #AAFFAA; display: inline;">' + mydata + "</div></strong>");
 				break;
 			}
 		}
-	}	
+	}
 }
 
 //console.log(mydata);
 //console.log(mydata.length);
-}while (mydata != null);
+}while (mydata !== null);
 
 page.html(temp_html);
 
 console.log("Done searching");
 
 //$('body').text(mydata);
-
-
-

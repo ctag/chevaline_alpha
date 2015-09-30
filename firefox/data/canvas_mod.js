@@ -9,7 +9,7 @@
 var debug = self.options.debug;
 var cleanupPage = self.options.cleanup_page;
 var extendSession = self.options.extend_session;
-var mod = new Object();
+var mod = {};
 
 /*
  * Functions
