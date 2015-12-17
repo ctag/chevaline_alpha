@@ -1,7 +1,7 @@
 {
   "name": "chevaline_alpha",
   "title": "Chevaline Alpha",
-  "id": "jid1-rApnWaAki9RlGA",
+  "id": "jid1-rApnWaAki9RlGA@jetpack",
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
   "license": "GPL v3",
@@ -10,6 +10,7 @@
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
   "dependencies": ["menuitems", "addon-sdk"],
+  "main": "./lib/main.js",
   "permissions": {
 		"cross-domain-content": ["https://uah.edu", "https://canvas.instructure.com", "https://uah.instructure.com"]
   },
