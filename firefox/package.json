@@ -4,62 +4,82 @@
   "id": "jid1-rApnWaAki9RlGA@jetpack",
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher [ctag] Bero",
-  "license": "GPL v3",
+  "license": "LGPL-3.0",
   "version": "2015.3.27",
   "homepage": "https://github.com/ctag/chevaline_alpha",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/ctag/chevaline_alpha"
+  },
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
-  "dependencies": ["menuitems", "addon-sdk"],
+  "dependencies": [
+    "addon-sdk",
+    "menuitems"
+  ],
   "main": "./lib/main.js",
   "permissions": {
-		"cross-domain-content": ["https://uah.edu", "https://canvas.instructure.com", "https://uah.instructure.com"]
+    "cross-domain-content": [
+      "https://uah.edu",
+      "https://canvas.instructure.com",
+      "https://uah.instructure.com"
+    ]
   },
-  "preferences": [{
-		"name": "crn_enabled",
-		"title": "Enable CRN handler?",
-		"type": "bool",
-		"value": false
-  },{
-		"name": "crn_year",
-		"title": "Year to pull courses for. Not Implemented.",
-		"type": "integer",
-		"value": 2015
-  },{
-		"name": "crn_semester",
-		"title": "Semester to pull courses for. Not Implemented.",
-		"type": "string",
-		"value": "sprg"
-  },{
-		"name": "sso_enabled",
-		"title": "Enable Automatic Login for UAH CAS? Only works if you've stored your CAS credentials in the firefox password manager.",
-		"type": "bool",
-		"value": false
-  },{
-		"name": "sso_url",
-		"title": "URL to use for Automatic Login.\nYou should not need to change this.",
-		"type": "string",
-		"value": "https://sso.uah.edu",
-    "hidden": true
-  },{
-		"name": "canvas_enabled",
-		"title": "Enable enhancements to your Canvas session?",
-		"type": "bool",
-		"value": false
-  },{
-		"name": "canvas_api_token",
-		"title": "Canvas API Access Token. This feature is unsecure. Used for fulltext inbox searching. Leave blank to disable. Generate token from your user settings page in Canvas.",
-		"type": "string",
-		"value": ""
-  },{
-		"name": "swagger_count",
-		"title": "Charger Pride Intensity",
-		"type": "integer",
-		"value": 20
-  },{
-		"name": "debug",
-		"title": "Enable debugging?",
-		"type": "bool",
-		"value": false
-  }
-]
+  "preferences": [
+    {
+      "name": "crn_enabled",
+      "title": "Enable CRN handler?",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "crn_year",
+      "title": "Year to pull courses for. Not Implemented.",
+      "type": "integer",
+      "value": 2015
+    },
+    {
+      "name": "crn_semester",
+      "title": "Semester to pull courses for. Not Implemented.",
+      "type": "string",
+      "value": "sprg"
+    },
+    {
+      "name": "sso_enabled",
+      "title": "Enable Automatic Login for UAH CAS? Only works if you've stored your CAS credentials in the firefox password manager.",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "sso_url",
+      "title": "URL to use for Automatic Login.\nYou should not need to change this.",
+      "type": "string",
+      "value": "https://sso.uah.edu",
+      "hidden": true
+    },
+    {
+      "name": "canvas_enabled",
+      "title": "Enable enhancements to your Canvas session?",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "canvas_api_token",
+      "title": "Canvas API Access Token. This feature is unsecure. Used for fulltext inbox searching. Leave blank to disable. Generate token from your user settings page in Canvas.",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "swagger_count",
+      "title": "Charger Pride Intensity",
+      "type": "integer",
+      "value": 20
+    },
+    {
+      "name": "debug",
+      "title": "Enable debugging?",
+      "type": "bool",
+      "value": false
+    }
+  ]
 }
