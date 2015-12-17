@@ -29,7 +29,7 @@ sdk.passwords = require('sdk/passwords');
  * Low level or 3rd party tools
  */
 
-var menuitem = require("menuitems");
+var menuitem = require("menuitem");
 var sso = require("./sso.js");
 var crapi = require("./canvas_api.js");
 var lunr = require('./lunr_search.js');
@@ -48,7 +48,6 @@ var semester = sdk.prefs.crn_semester;
  * Items in browser's alt menus
  */
 
-/*
 menuitem.Menuitem({
 	id: "chevaline_button_test",
 	menuid: "menu_ToolsPopup",
@@ -58,7 +57,6 @@ menuitem.Menuitem({
 	insertbefore: "menu_pageInfo",
 	image: sdk.selfMod.data.url('chevalogo_16.png')
 });
-*/
 
 sdk.simplePrefs.on('sso_enabled', preferenceChanged);
 

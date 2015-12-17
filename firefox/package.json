@@ -8,8 +8,8 @@
   "version": "2015.3.27",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/ctag/chevaline_alpha"
+    "type": "git",
+    "url": "https://github.com/ctag/chevaline_alpha"
   },
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
