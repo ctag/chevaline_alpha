@@ -3,9 +3,9 @@
   "title": "Chevaline Alpha",
   "id": "jid1-rApnWaAki9RlGA@jetpack",
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
-  "author": "Christopher [ctag] Bero",
+  "author": "Christopher Bero",
   "license": "LGPL-3.0",
-  "version": "2015.3.27",
+  "version": "2015.12.17",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "repository": {
     "type": "git",
@@ -14,7 +14,6 @@
   "icon": "data/chevalogo_32.png",
   "icon64": "data/chevalogo_64.png",
   "dependencies": [
-    "addon-sdk",
     "menuitems"
   ],
   "main": "./lib/main.js",

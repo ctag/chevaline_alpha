@@ -32,7 +32,6 @@ sdk.passwords = require('sdk/passwords');
 var menuitem = require("menuitem");
 var sso = require("./sso.js");
 var crapi = require("./canvas_api.js");
-var lunr = require('./lunr_search.js');
 const {
   XMLHttpRequest
 } = require("sdk/net/xhr");
