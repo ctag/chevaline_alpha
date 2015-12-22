@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -r /home/berocs/Downloads/firefox_profiledir
+rm -r /home/berocs/downloads/firefox_profiledir
 

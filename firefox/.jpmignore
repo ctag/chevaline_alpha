@@ -1,0 +1,8 @@
+
+*.zip
+*.xpi
+*.sh
+update.rdf
+.*
+*.md
+todo.txt
