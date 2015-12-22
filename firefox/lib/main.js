@@ -29,7 +29,7 @@ sdk.passwords = require('sdk/passwords');
  * Low level or 3rd party tools
  */
 
-var menuitem = require("menuitem");
+//var menuitem = require("menuitem");
 var sso = require("./sso.js");
 var crapi = require("./canvas_api.js");
 const {
@@ -47,15 +47,15 @@ var semester = sdk.prefs.crn_semester;
  * Items in browser's alt menus
  */
 
-menuitem.Menuitem({
-	id: "chevaline_button_test",
-	menuid: "menu_ToolsPopup",
-	label: "Chevaline Alpha",
-	disabled: true,
-	//onCommand: showPanel(),
-	insertbefore: "menu_pageInfo",
-	image: sdk.selfMod.data.url('chevalogo_16.png')
-});
+// menuitem.Menuitem({
+// 	id: "chevaline_button_test",
+// 	menuid: "menu_ToolsPopup",
+// 	label: "Chevaline Alpha",
+// 	disabled: true,
+// 	//onCommand: showPanel(),
+// 	insertbefore: "menu_pageInfo",
+// 	image: sdk.selfMod.data.url('chevalogo_16.png')
+// });
 
 sdk.simplePrefs.on('sso_enabled', preferenceChanged);
 
