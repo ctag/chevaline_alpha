@@ -5,10 +5,10 @@
   "description": "By students, for students. This addon is a suite of features to generally enhance your experience with UAH's online services. If you have any questions or requests, please send them to the package maintainer, we'd like to hear from you!",
   "author": "Christopher Bero",
   "license": "LGPL-3.0",
-  "version": "0.26.0",
+  "version": "0.26.1",
   "homepage": "https://github.com/ctag/chevaline_alpha",
   "updateURL": "https://raw.githubusercontent.com/ctag/chevaline_alpha/master/firefox/update.rdf",
-  "updateLink": "https://github.com/ctag/chevaline_alpha/releases/download/0.26.0/chevaline_alpha.xpi",
+  "updateLink": "https://github.com/ctag/chevaline_alpha/releases/download/0.26.1/chevaline_alpha.xpi",
   "repository": {
     "type": "git",
     "url": "https://github.com/ctag/chevaline_alpha"
